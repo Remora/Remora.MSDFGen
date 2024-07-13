@@ -118,7 +118,7 @@ public class CubicSegment : EdgeSegment
                 var d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
                 var d2 = (6 * _as * (float)t) + (6 * br);
                 _t -= Vector2.Dot(qpt, d1) / (Vector2.Dot(d1, d1) + Vector2.Dot(qpt, d2));
-                if (t < 0 || t > 1)
+                if (t is < 0 or > 1)
                 {
                     break;
                 }

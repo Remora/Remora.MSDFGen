@@ -23,13 +23,13 @@ public static partial class MSDF
     {
         var combined = color & banned;
 
-        if (combined == EdgeColor.Red || combined == EdgeColor.Green || combined == EdgeColor.Blue)
+        if (combined is EdgeColor.Red or EdgeColor.Green or EdgeColor.Blue)
         {
             color = combined ^ EdgeColor.White;
             return;
         }
 
-        if (color == EdgeColor.Black || color == EdgeColor.White)
+        if (color is EdgeColor.Black or EdgeColor.White)
         {
             color = switchColors[seed % 3];
             seed /= 3;
