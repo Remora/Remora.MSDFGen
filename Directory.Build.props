@@ -1,0 +1,26 @@
+<Project>
+    <PropertyGroup>
+        <LegalAuthor>Jarl Gullberg</LegalAuthor>
+        <LegalEmail>jarl.gullberg@gmail.com</LegalEmail>
+        <UseSPDXFileHeaders>true</UseSPDXFileHeaders>
+        <LegalLicense>MIT</LegalLicense>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <SolutionDir>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)/))</SolutionDir>
+    </PropertyGroup>
+
+    <!-- NuGet-related properties -->
+    <PropertyGroup>
+        <RepositoryBranch>main</RepositoryBranch>
+        <RepositoryUrl>https://github.com/Remora/Remora.MSDFGen</RepositoryUrl>
+
+        <PackageProjectUrl>https://github.com/Remora/Remora.MSDFGen</PackageProjectUrl>
+        <PackageOutputPath>$(SolutionDir)/nuget</PackageOutputPath>
+        <PackageTags>remora</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    </PropertyGroup>
+</Project>
