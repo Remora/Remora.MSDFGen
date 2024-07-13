@@ -132,12 +132,7 @@ public abstract class EdgeSegment
     protected int NonZeroSign(double d)
     {
         var result = Math.Sign(d);
-        if (result == 0)
-        {
-            return 1;
-        }
-
-        return result;
+        return result == 0 ? 1 : result;
     }
 
     protected struct Roots
@@ -245,22 +240,12 @@ public abstract class EdgeSegment
             roots.x1 = (-0.5 * (A + B)) - a;
             roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
 
-            if (Math.Abs(roots.x2) < 1e-14)
-            {
-                return 2;
-            }
-
-            return 1;
+            return Math.Abs(roots.x2) < 1e-14 ? 2 : 1;
         }
     }
 
     protected int SolveCubic(ref Roots roots, double a, double b, double c, double d)
     {
-        if (Math.Abs(a) < 1e-14)
-        {
-            return SolveQuadratic(ref roots, b, c, d);
-        }
-
-        return SolveCubicNormed(ref roots, b / a, c / a, d / a);
+        return Math.Abs(a) < 1e-14 ? SolveQuadratic(ref roots, b, c, d) : SolveCubicNormed(ref roots, b / a, c / a, d / a);
     }
 }
