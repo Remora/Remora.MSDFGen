@@ -13,7 +13,7 @@ public struct SignedDistance
     public double distance;
     public double dot;
 
-    public static SignedDistance Infinite { get; } = new SignedDistance(-1e240, 1);
+    public static SignedDistance Infinite { get; } = new(-1e240, 1);
 
     public SignedDistance(double distance, double dot)
     {

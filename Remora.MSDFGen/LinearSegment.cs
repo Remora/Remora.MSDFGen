@@ -44,13 +44,19 @@ public class LinearSegment : EdgeSegment
         var eq = (t > 0.5d ? p1 : p0) - origin;
         double endPointDistance = eq.Length();
 
-        if (t is > 0 and < 1)
+        if (t is <= 0 or >= 1)
         {
-            double orthoDistance = Vector2.Dot(GetOrthonormal(ab, false, false), aq);
-            if (Math.Abs(orthoDistance) < endPointDistance)
-            {
-                return new SignedDistance(orthoDistance, 0);
-            }
+            return new SignedDistance
+            (
+                NonZeroSign(Cross(aq, ab)) * endPointDistance,
+                Math.Abs(Vector2.Dot(Vector2.Normalize(ab), Vector2.Normalize(eq)))
+            );
+        }
+
+        double orthoDistance = Vector2.Dot(GetOrthonormal(ab, false, false), aq);
+        if (Math.Abs(orthoDistance) < endPointDistance)
+        {
+            return new SignedDistance(orthoDistance, 0);
         }
 
         return new SignedDistance(

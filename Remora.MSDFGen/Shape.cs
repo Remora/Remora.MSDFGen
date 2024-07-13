@@ -23,23 +23,25 @@ public class Shape
     {
         foreach (var contour in Contours)
         {
-            if (contour.Edges.Count > 0)
+            if (contour.Edges.Count <= 0)
             {
-                var corner = contour.Edges[^1].GetPoint(1);
-                foreach (var edge in contour.Edges)
+                continue;
+            }
+
+            var corner = contour.Edges[^1].GetPoint(1);
+            foreach (var edge in contour.Edges)
+            {
+                if (edge == null)
                 {
-                    if (edge == null)
-                    {
-                        return false;
-                    }
-
-                    if (edge.GetPoint(0) != corner)
-                    {
-                        return false;
-                    }
-
-                    corner = edge.GetPoint(1);
+                    return false;
                 }
+
+                if (edge.GetPoint(0) != corner)
+                {
+                    return false;
+                }
+
+                corner = edge.GetPoint(1);
             }
         }
 
@@ -50,14 +52,16 @@ public class Shape
     {
         foreach (var contour in Contours)
         {
-            if (contour.Edges.Count == 1)
+            if (contour.Edges.Count != 1)
             {
-                contour.Edges[0].SplitInThirds(out var e1, out var e2, out var e3);
-                contour.Edges.Clear();
-                contour.Edges.Add(e1);
-                contour.Edges.Add(e2);
-                contour.Edges.Add(e3);
+                continue;
             }
+
+            contour.Edges[0].SplitInThirds(out var e1, out var e2, out var e3);
+            contour.Edges.Clear();
+            contour.Edges.Add(e1);
+            contour.Edges.Add(e2);
+            contour.Edges.Add(e3);
         }
     }
 

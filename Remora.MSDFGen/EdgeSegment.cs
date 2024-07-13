@@ -222,26 +222,26 @@ public abstract class EdgeSegment
 
             return 3;
         }
-        else
+
+        var A = -Math.Pow
+        (
+            Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
+            1 / 3d
+        );
+
+        if (r < 0)
         {
-            var A = -Math.Pow(
-                Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
-                1 / 3d
-            );
-            if (r < 0)
-            {
-                A = -A;
-            }
-
-            var B = A == 0 ? 0 : q / A;
-            a /= 3;
-
-            roots.x0 = A + B - a;
-            roots.x1 = (-0.5 * (A + B)) - a;
-            roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
-
-            return Math.Abs(roots.x2) < 1e-14 ? 2 : 1;
+            A = -A;
         }
+
+        var B = A == 0 ? 0 : q / A;
+        a /= 3;
+
+        roots.x0 = A + B - a;
+        roots.x1 = (-0.5 * (A + B)) - a;
+        roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
+
+        return Math.Abs(roots.x2) < 1e-14 ? 2 : 1;
     }
 
     protected int SolveCubic(ref Roots roots, double a, double b, double c, double d)

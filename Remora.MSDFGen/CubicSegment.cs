@@ -56,22 +56,17 @@ public class CubicSegment : EdgeSegment
             (float)t
         );
 
-        if (tangent == Vector2.Zero)
+        if (tangent != Vector2.Zero)
         {
-            switch (t)
-            {
-                case 0:
-                {
-                    return p2 - p0;
-                }
-                case 1:
-                {
-                    return p3 - p1;
-                }
-            }
+            return tangent;
         }
 
-        return tangent;
+        return t switch
+        {
+            0 => p2 - p0,
+            1 => p3 - p1,
+            _ => tangent
+        };
     }
 
     public override SignedDistance GetSignedDistance(Vector2 origin, out double t)

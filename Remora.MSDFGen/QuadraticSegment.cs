@@ -71,17 +71,21 @@ public class QuadraticSegment : EdgeSegment
 
         for (var i = 0; i < solutions; i++)
         {
-            if (roots[i] > 0 && roots[i] < 1)
+            if (!(roots[i] > 0) || !(roots[i] < 1))
             {
-                var endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
-                double solutionDistance = NonZeroSign(Cross(p2 - p0, endPoint - origin)) * (endPoint - origin).Length();
-
-                if (Math.Abs(solutionDistance) <= Math.Abs(minDistance))
-                {
-                    minDistance = solutionDistance;
-                    t = roots[i];
-                }
+                continue;
             }
+
+            var endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
+            double solutionDistance = NonZeroSign(Cross(p2 - p0, endPoint - origin)) * (endPoint - origin).Length();
+
+            if (!(Math.Abs(solutionDistance) <= Math.Abs(minDistance)))
+            {
+                continue;
+            }
+
+            minDistance = solutionDistance;
+            t = roots[i];
         }
 
         return t switch

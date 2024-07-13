@@ -563,12 +563,14 @@ public static class MSDF
                     g.nearParam = param;
                 }
 
-                if ((edge.Color & EdgeColor.Blue) == EdgeColor.Blue && distance < b.minDistance)
+                if ((edge.Color & EdgeColor.Blue) != EdgeColor.Blue || distance >= b.minDistance)
                 {
-                    b.minDistance = distance;
-                    b.nearEdge = edge;
-                    b.nearParam = param;
+                    continue;
                 }
+
+                b.minDistance = distance;
+                b.nearEdge = edge;
+                b.nearParam = param;
             }
 
             if (r.minDistance < sr.minDistance)
@@ -626,7 +628,7 @@ public static class MSDF
             r = SignedDistance.Infinite.distance,
             g = SignedDistance.Infinite.distance,
             b = SignedDistance.Infinite.distance,
-            med = SignedDistance.Infinite.distance,
+            med = SignedDistance.Infinite.distance
         };
 
         if (posDist >= 0 && Math.Abs(posDist) <= Math.Abs(negDist))
@@ -662,12 +664,17 @@ public static class MSDF
             }
         }
 
-        if (Median(sr.minDistance.distance, sg.minDistance.distance, sb.minDistance.distance) == msd.med)
+        if (Median(sr.minDistance.distance, sg.minDistance.distance, sb.minDistance.distance) != msd.med)
         {
-            msd.r = sr.minDistance.distance;
-            msd.g = sg.minDistance.distance;
-            msd.b = sb.minDistance.distance;
+            return new Color3(
+                (float)(msd.r / range) + 0.5f,
+                (float)(msd.g / range) + 0.5f,
+                (float)(msd.b / range) + 0.5f);
         }
+
+        msd.r = sr.minDistance.distance;
+        msd.g = sg.minDistance.distance;
+        msd.b = sb.minDistance.distance;
 
         return new Color3((float)(msd.r / range) + 0.5f, (float)(msd.g / range) + 0.5f, (float)(msd.b / range) + 0.5f);
     }
