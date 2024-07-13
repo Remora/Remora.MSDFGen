@@ -288,7 +288,6 @@ public static partial class MSDF
     {
         var contourCount = contourSD.Length;
 
-        double dummy;
         var p = (new Vector2(x + 0.5f, y + 0.5f) / scale) - translate;
         var negDist = -SignedDistance.Infinite.distance;
         var posDist = SignedDistance.Infinite.distance;
@@ -301,7 +300,7 @@ public static partial class MSDF
 
             foreach (var edge in contour.Edges)
             {
-                var distance = edge.GetSignedDistance(p, out dummy);
+                var distance = edge.GetSignedDistance(p, out _);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
