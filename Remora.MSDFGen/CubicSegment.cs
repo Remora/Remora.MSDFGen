@@ -31,7 +31,7 @@ public class CubicSegment : EdgeSegment
 
     public override Vector2 GetPoint(double t)
     {
-        Vector2 p12 = Vector2.Lerp(p1, p2, (float)t);
+        var p12 = Vector2.Lerp(p1, p2, (float)t);
         return Vector2.Lerp(
             Vector2.Lerp(
                 Vector2.Lerp(p0, p1, (float)t),
@@ -49,7 +49,7 @@ public class CubicSegment : EdgeSegment
 
     public override Vector2 GetDirection(double t)
     {
-        Vector2 tangent = Vector2.Lerp(
+        var tangent = Vector2.Lerp(
             Vector2.Lerp(p1 - p0, p2 - p1, (float)t),
             Vector2.Lerp(p2 - p1, p3 - p2, (float)t),
             (float)t
@@ -73,12 +73,12 @@ public class CubicSegment : EdgeSegment
 
     public override SignedDistance GetSignedDistance(Vector2 origin, out double t)
     {
-        Vector2 qa = p0 - origin;
-        Vector2 ab = p1 - p0;
-        Vector2 br = p2 - p1 - ab;
-        Vector2 _as = (p3 - p2) - (p2 - p1) - br;
+        var qa = p0 - origin;
+        var ab = p1 - p0;
+        var br = p2 - p1 - ab;
+        var _as = (p3 - p2) - (p2 - p1) - br;
 
-        Vector2 epDir = GetDirection(0);
+        var epDir = GetDirection(0);
         double minDistance = NonZeroSign(Cross(epDir, qa)) * qa.Length();
         t = -Vector2.Dot(qa, epDir) / Vector2.Dot(epDir, epDir);
 
@@ -93,13 +93,13 @@ public class CubicSegment : EdgeSegment
             }
         }
 
-        for (int i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++)
         {
-            double _t = (double)i / 4;
-            int step = 0;
+            var _t = (double)i / 4;
+            var step = 0;
             while (true)
             {
-                Vector2 qpt = GetPoint(_t) - origin;
+                var qpt = GetPoint(_t) - origin;
                 double distance = NonZeroSign(Cross(GetDirection(_t), qpt)) * qpt.Length();
 
                 if (Math.Abs(distance) < Math.Abs(minDistance))
@@ -113,8 +113,8 @@ public class CubicSegment : EdgeSegment
                     break;
                 }
 
-                Vector2 d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
-                Vector2 d2 = 6 * _as * (float)t + 6 * br;
+                var d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
+                var d2 = 6 * _as * (float)t + 6 * br;
                 _t -= Vector2.Dot(qpt, d1) / (Vector2.Dot(d1, d1) + Vector2.Dot(qpt, d2));
                 if (t < 0 || t > 1)
                 {
@@ -151,13 +151,13 @@ public class CubicSegment : EdgeSegment
         PointBounds(p0, ref left, ref bottom, ref right, ref top);
         PointBounds(p3, ref left, ref bottom, ref right, ref top);
 
-        Vector2 a0 = p1 - p0;
-        Vector2 a1 = 2 * (p2 - p1 - a0);
-        Vector2 a2 = p3 - 3 * p2 + 3 * p1 - p0;
+        var a0 = p1 - p0;
+        var a1 = 2 * (p2 - p1 - a0);
+        var a2 = p3 - 3 * p2 + 3 * p1 - p0;
 
-        Roots roots = new Roots();
-        int solutions = SolveQuadratic(ref roots, a2.X, a1.X, a0.X);
-        for (int i = 0; i < solutions; i++)
+        var roots = new Roots();
+        var solutions = SolveQuadratic(ref roots, a2.X, a1.X, a0.X);
+        for (var i = 0; i < solutions; i++)
         {
             if (roots[i] > 0 && roots[i] < 1)
             {
@@ -166,7 +166,7 @@ public class CubicSegment : EdgeSegment
         }
 
         solutions = SolveQuadratic(ref roots, a2.Y, a1.Y, a0.Y);
-        for (int i = 0; i < solutions; i++)
+        for (var i = 0; i < solutions; i++)
         {
             if (roots[i] > 0 && roots[i] < 1)
             {

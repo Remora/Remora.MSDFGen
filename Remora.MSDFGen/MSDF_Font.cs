@@ -28,8 +28,8 @@ public static partial class MSDF
     {
         unsafe
         {
-            Context context = Unsafe.Read<Context>((void*)user);
-            Contour contour = new Contour();
+            var context = Unsafe.Read<Context>((void*)user);
+            var contour = new Contour();
             context.shape.Contours.Add(contour);
             context.contour = contour;
             context.position = ToVector2(to);
@@ -42,7 +42,7 @@ public static partial class MSDF
     {
         unsafe
         {
-            Context context = Unsafe.Read<Context>((void*)user);
+            var context = Unsafe.Read<Context>((void*)user);
             context.contour.Edges.Add(new LinearSegment(context.position, ToVector2(to), EdgeColor.White));
             context.position = ToVector2(to);
             Unsafe.Write((void*)user, context);
@@ -54,7 +54,7 @@ public static partial class MSDF
     {
         unsafe
         {
-            Context context = Unsafe.Read<Context>((void*)user);
+            var context = Unsafe.Read<Context>((void*)user);
             context.contour.Edges.Add(
                 new QuadraticSegment(context.position, ToVector2(control), ToVector2(to), EdgeColor.White));
             context.position = ToVector2(to);
@@ -67,7 +67,7 @@ public static partial class MSDF
     {
         unsafe
         {
-            Context context = Unsafe.Read<Context>((void*)user);
+            var context = Unsafe.Read<Context>((void*)user);
             context.contour.Edges.Add(
                 new CubicSegment(
                     context.position,
@@ -90,9 +90,9 @@ public static partial class MSDF
 
         face.LoadChar((uint)unicode, LoadFlags.NoScale, LoadTarget.Normal);
 
-        Shape output = new Shape();
+        var output = new Shape();
 
-        Context context = new Context
+        var context = new Context
         {
             shape = output
         };

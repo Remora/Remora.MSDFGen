@@ -50,13 +50,13 @@ public abstract class EdgeSegment
     {
         if (t < 0)
         {
-            Vector2 dir = Vector2.Normalize(GetDirection(0));
-            Vector2 aq = origin - GetPoint(0);
+            var dir = Vector2.Normalize(GetDirection(0));
+            var aq = origin - GetPoint(0);
             double ts = Vector2.Dot(aq, dir);
 
             if (ts < 0)
             {
-                double pseudoDistance = Cross(aq, dir);
+                var pseudoDistance = Cross(aq, dir);
                 if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
                 {
                     distance.distance = pseudoDistance;
@@ -66,13 +66,13 @@ public abstract class EdgeSegment
         }
         else if (t > 1)
         {
-            Vector2 dir = Vector2.Normalize(GetDirection(1));
-            Vector2 bq = origin - GetPoint(1);
+            var dir = Vector2.Normalize(GetDirection(1));
+            var bq = origin - GetPoint(1);
             double ts = Vector2.Dot(bq, dir);
 
             if (ts > 0)
             {
-                double pseudoDistance = Cross(bq, dir);
+                var pseudoDistance = Cross(bq, dir);
                 if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
                 {
                     distance.distance = pseudoDistance;
@@ -84,7 +84,7 @@ public abstract class EdgeSegment
 
     public Vector2 GetOrthonormal(Vector2 v, bool polarity, bool allowZero)
     {
-        float len = v.Length();
+        var len = v.Length();
 
         if (len == 0)
         {
@@ -124,7 +124,7 @@ public abstract class EdgeSegment
 
     protected int NonZeroSign(double d)
     {
-        int result = Math.Sign(d);
+        var result = Math.Sign(d);
         if (result == 0)
         {
             return 1;
@@ -172,7 +172,7 @@ public abstract class EdgeSegment
             return 1;
         }
 
-        double discriminant = b * b - 4 * a * c;
+        var discriminant = b * b - 4 * a * c;
 
         if (discriminant > 0)
         {
@@ -194,15 +194,15 @@ public abstract class EdgeSegment
 
     protected int SolveCubicNormed(ref Roots roots, double a, double b, double c)
     {
-        double aSquared = a * a;
-        double q = (aSquared - 3 * b) / 9;
-        double r = (a * (2 * aSquared - 9 * b) + 27 * c) / 54;
-        double rSquared = r * r;
-        double qCubed = q * q * q;
+        var aSquared = a * a;
+        var q = (aSquared - 3 * b) / 9;
+        var r = (a * (2 * aSquared - 9 * b) + 27 * c) / 54;
+        var rSquared = r * r;
+        var qCubed = q * q * q;
 
         if (rSquared < qCubed)
         {
-            double t = r / Math.Sqrt(qCubed);
+            var t = r / Math.Sqrt(qCubed);
             if (t < -1)
             {
                 t = -1;
@@ -225,7 +225,7 @@ public abstract class EdgeSegment
         }
         else
         {
-            double A = -Math.Pow(
+            var A = -Math.Pow(
                 Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
                 1 / 3d
             );
@@ -234,7 +234,7 @@ public abstract class EdgeSegment
                 A = -A;
             }
 
-            double B = A == 0 ? 0 : q / A;
+            var B = A == 0 ? 0 : q / A;
             a /= 3;
 
             roots.x0 = (A + B) - a;

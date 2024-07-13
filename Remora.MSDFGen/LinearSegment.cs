@@ -37,10 +37,10 @@ public class LinearSegment : EdgeSegment
 
     public override SignedDistance GetSignedDistance(Vector2 origin, out double t)
     {
-        Vector2 aq = origin - p0;
-        Vector2 ab = p1 - p0;
+        var aq = origin - p0;
+        var ab = p1 - p0;
         t = Vector2.Dot(aq, ab) / Vector2.Dot(ab, ab);
-        Vector2 eq = (t > 0.5d ? p1 : p0) - origin;
+        var eq = (t > 0.5d ? p1 : p0) - origin;
         double endPointDistance = eq.Length();
 
         if (t > 0 && t < 1)

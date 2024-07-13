@@ -21,7 +21,7 @@ public class Contour
 
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        for (int i = 0; i < Edges.Count; i++)
+        for (var i = 0; i < Edges.Count; i++)
         {
             Edges[i].GetBounds(ref left, ref bottom, ref right, ref top);
         }
@@ -40,9 +40,9 @@ public class Contour
 
             if (Edges.Count == 1)
             {
-                Vector2 a = Edges[0].GetPoint(0);
-                Vector2 b = Edges[0].GetPoint(1 / 3f);
-                Vector2 c = Edges[0].GetPoint(2 / 3f);
+                var a = Edges[0].GetPoint(0);
+                var b = Edges[0].GetPoint(1 / 3f);
+                var c = Edges[0].GetPoint(2 / 3f);
 
                 total += Shoelace(a, b);
                 total += Shoelace(b, c);
@@ -50,10 +50,10 @@ public class Contour
             }
             else if (Edges.Count == 2)
             {
-                Vector2 a = Edges[0].GetPoint(0);
-                Vector2 b = Edges[0].GetPoint(0.5f);
-                Vector2 c = Edges[1].GetPoint(0);
-                Vector2 d = Edges[1].GetPoint(0.5f);
+                var a = Edges[0].GetPoint(0);
+                var b = Edges[0].GetPoint(0.5f);
+                var c = Edges[1].GetPoint(0);
+                var d = Edges[1].GetPoint(0.5f);
 
                 total += Shoelace(a, b);
                 total += Shoelace(b, c);
@@ -62,10 +62,10 @@ public class Contour
             }
             else
             {
-                Vector2 prev = Edges[Edges.Count - 1].GetPoint(0);
-                for (int i = 0; i < Edges.Count; i++)
+                var prev = Edges[Edges.Count - 1].GetPoint(0);
+                for (var i = 0; i < Edges.Count; i++)
                 {
-                    Vector2 cur = Edges[i].GetPoint(0);
+                    var cur = Edges[i].GetPoint(0);
                     total += Shoelace(prev, cur);
                     prev = cur;
                 }

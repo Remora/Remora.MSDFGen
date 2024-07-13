@@ -47,16 +47,16 @@ public class QuadraticSegment : EdgeSegment
 
     public override SignedDistance GetSignedDistance(Vector2 origin, out double t)
     {
-        Vector2 qa = p0 - origin;
-        Vector2 ab = p1 - p0;
-        Vector2 br = p0 + p2 - p1 - p1;
+        var qa = p0 - origin;
+        var ab = p1 - p0;
+        var br = p0 + p2 - p1 - p1;
         double a = Vector2.Dot(br, br);
         double b = 3 * Vector2.Dot(ab, br);
         double c = 2 * Vector2.Dot(ab, ab) + Vector2.Dot(qa, br);
         double d = Vector2.Dot(qa, ab);
 
-        Roots roots = new Roots();
-        int solutions = SolveCubic(ref roots, a, b, c, d);
+        var roots = new Roots();
+        var solutions = SolveCubic(ref roots, a, b, c, d);
 
         double minDistance = NonZeroSign(Cross(ab, qa)) * qa.Length();
         t = -Vector2.Dot(qa, ab) / Vector2.Dot(ab, ab);
@@ -70,11 +70,11 @@ public class QuadraticSegment : EdgeSegment
             }
         }
 
-        for (int i = 0; i < solutions; i++)
+        for (var i = 0; i < solutions; i++)
         {
             if (roots[i] > 0 && roots[i] < 1)
             {
-                Vector2 endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
+                var endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
                 double distance = NonZeroSign(Cross(p2 - p0, endPoint - origin)) * (endPoint - origin).Length();
 
                 if (Math.Abs(distance) <= Math.Abs(minDistance))
@@ -111,7 +111,7 @@ public class QuadraticSegment : EdgeSegment
     {
         PointBounds(p0, ref left, ref bottom, ref right, ref top);
         PointBounds(p2, ref left, ref bottom, ref right, ref top);
-        Vector2 bot = (p1 - p0) - (p2 - p1);
+        var bot = (p1 - p0) - (p2 - p1);
 
         if (bot.X != 0)
         {
@@ -134,8 +134,8 @@ public class QuadraticSegment : EdgeSegment
 
     public override void MoveStartPoint(Vector2 to)
     {
-        Vector2 origSDir = p0 - p1;
-        Vector2 origP1 = p1;
+        var origSDir = p0 - p1;
+        var origP1 = p1;
 
         p1 += (float)(Cross(p0 - p1, to - p0) / Cross(p0 - p1, p2 - p1)) * (p2 - p1);
         p0 = to;
@@ -147,8 +147,8 @@ public class QuadraticSegment : EdgeSegment
 
     public override void MoveEndPoint(Vector2 to)
     {
-        Vector2 origEDir = p2 - p1;
-        Vector2 origP1 = p1;
+        var origEDir = p2 - p1;
+        var origP1 = p1;
 
         p1 += (float)(Cross(p2 - p1, to - p2) / Cross(p2 - p1, p0 - p1)) * (p0 - p1);
         p2 = to;

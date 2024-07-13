@@ -21,7 +21,7 @@ public static partial class MSDF
 
     static void SwitchColor(ref EdgeColor color, ref ulong seed, EdgeColor banned)
     {
-        EdgeColor combined = color & banned;
+        var combined = color & banned;
 
         if (combined == EdgeColor.Red || combined == EdgeColor.Green || combined == EdgeColor.Blue)
         {
@@ -36,27 +36,27 @@ public static partial class MSDF
             return;
         }
 
-        int shifted = (int)color << (int)(1 + (seed & 1));
+        var shifted = (int)color << (int)(1 + (seed & 1));
         color = (EdgeColor)((shifted | shifted >> 3) & (int)EdgeColor.White);
         seed >>= 1;
     }
 
     public static void EdgeColoringSimple(Shape shape, double angleThreshold, ulong seed)
     {
-        double crossThreshold = Math.Sin(angleThreshold);
-        List<int> corners = new List<int>();
-        for (int i = 0; i < shape.Contours.Count; i++)
+        var crossThreshold = Math.Sin(angleThreshold);
+        var corners = new List<int>();
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
-            Contour contour = shape.Contours[i];
+            var contour = shape.Contours[i];
             corners.Clear();
 
             if (!(contour.Edges.Count == 0))
             {
-                Vector2 prevDirection = contour.Edges[contour.Edges.Count - 1].GetDirection(1);
+                var prevDirection = contour.Edges[contour.Edges.Count - 1].GetDirection(1);
 
-                for (int j = 0; j < contour.Edges.Count; j++)
+                for (var j = 0; j < contour.Edges.Count; j++)
                 {
-                    EdgeSegment edge = contour.Edges[j];
+                    var edge = contour.Edges[j];
                     if (IsCorner(
                             Vector2.Normalize(prevDirection),
                             Vector2.Normalize(edge.GetDirection(0)),
@@ -71,7 +71,7 @@ public static partial class MSDF
 
             if (corners.Count == 0)
             {
-                for (int j = 0; j < contour.Edges.Count; j++)
+                for (var j = 0; j < contour.Edges.Count; j++)
                 {
                     contour.Edges[j].Color = EdgeColor.White;
                 }
@@ -82,14 +82,14 @@ public static partial class MSDF
                 SwitchColor(ref colors[0], ref seed, EdgeColor.Black);
                 SwitchColor(ref colors[2], ref seed, EdgeColor.Black);
 
-                int corner = corners[0];
+                var corner = corners[0];
 
                 if (contour.Edges.Count >= 3)
                 {
-                    int m = contour.Edges.Count;
-                    for (int j = 0; j < m; j++)
+                    var m = contour.Edges.Count;
+                    for (var j = 0; j < m; j++)
                     {
-                        int magic = (int)(3 + 2.875f * j / (m - 1) - 1.4375f + 0.5f) -
+                        var magic = (int)(3 + 2.875f * j / (m - 1) - 1.4375f + 0.5f) -
                                     3; //see edge-coloring.cpp in the original msdfgen
                         contour.Edges[(corner + j) % m].Color = colors[1 + magic];
                     }
@@ -122,7 +122,7 @@ public static partial class MSDF
                     }
 
                     contour.Edges.Clear();
-                    for (int j = 0; parts[j] != null; j++)
+                    for (var j = 0; parts[j] != null; j++)
                     {
                         contour.Edges.Add(parts[j]);
                     }
@@ -130,16 +130,16 @@ public static partial class MSDF
             }
             else
             {
-                int cornerCount = corners.Count;
-                int spline = 0;
-                int start = corners[0];
-                int m = contour.Edges.Count;
-                EdgeColor color = EdgeColor.White;
+                var cornerCount = corners.Count;
+                var spline = 0;
+                var start = corners[0];
+                var m = contour.Edges.Count;
+                var color = EdgeColor.White;
                 SwitchColor(ref color, ref seed, EdgeColor.Black);
-                EdgeColor initialColor = color;
-                for (int j = 0; j < m; j++)
+                var initialColor = color;
+                for (var j = 0; j < m; j++)
                 {
-                    int index = (start + j) % m;
+                    var index = (start + j) % m;
                     if (spline + 1 < cornerCount && corners[spline + 1] == index)
                     {
                         spline++;

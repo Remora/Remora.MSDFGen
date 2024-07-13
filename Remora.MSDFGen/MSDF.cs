@@ -22,8 +22,8 @@ public static partial class MSDF
 {
     public static bool PixelClash(Color4 a, Color4 b, double threshold)
     {
-        bool aIn = ((a.r > .5f) ? 1 : 0) + ((a.g > .5f) ? 1 : 0) + ((a.b > .5f) ? 1 : 0) >= 2;
-        bool bIn = ((b.r > .5f) ? 1 : 0) + ((b.g > .5f) ? 1 : 0) + ((b.b > .5f) ? 1 : 0) >= 2;
+        var aIn = ((a.r > .5f) ? 1 : 0) + ((a.g > .5f) ? 1 : 0) + ((a.b > .5f) ? 1 : 0) >= 2;
+        var bIn = ((b.r > .5f) ? 1 : 0) + ((b.g > .5f) ? 1 : 0) + ((b.b > .5f) ? 1 : 0) >= 2;
         if (aIn != bIn)
         {
             return false;
@@ -102,7 +102,7 @@ public static partial class MSDF
 
     public static void CorrectErrors(Bitmap<Color4> output, Rectanglei region, Vector2 threshold)
     {
-        List<Clash> clashes = new List<Clash>();
+        var clashes = new List<Clash>();
         int w = output.Width;
         int h = output.Height;
 
@@ -111,9 +111,9 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, region.Bottom), output.Height);
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            for (int x = xStart; x < xEnd; x++)
+            for (var x = xStart; x < xEnd; x++)
             {
                 if ((x > 0 && PixelClash(output[x, y], output[x - 1, y], threshold.X)) ||
                     (x < w - 1 && PixelClash(output[x, y], output[x + 1, y], threshold.X)) ||
@@ -125,7 +125,7 @@ public static partial class MSDF
             }
         }
 
-        for (int i = 0; i < clashes.Count; i++)
+        for (var i = 0; i < clashes.Count; i++)
         {
             Color4 pixel = output[clashes[i].x, clashes[i].y];
             float med = Median(pixel.r, pixel.g, pixel.b);
@@ -138,7 +138,7 @@ public static partial class MSDF
 
     public static void CorrectErrors(Bitmap<Color4b> output, Rectanglei region, Vector2 threshold)
     {
-        List<Clash> clashes = new List<Clash>();
+        var clashes = new List<Clash>();
         int w = output.Width;
         int h = output.Height;
 
@@ -147,9 +147,9 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, region.Bottom), output.Height);
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            for (int x = xStart; x < xEnd; x++)
+            for (var x = xStart; x < xEnd; x++)
             {
                 if ((x > 0 && PixelClash(output[x, y], output[x - 1, y], threshold.X)) ||
                     (x < w - 1 && PixelClash(output[x, y], output[x + 1, y], threshold.X)) ||
@@ -161,7 +161,7 @@ public static partial class MSDF
             }
         }
 
-        for (int i = 0; i < clashes.Count; i++)
+        for (var i = 0; i < clashes.Count; i++)
         {
             Color4b pixel = output[clashes[i].x, clashes[i].y];
             int med = Median(pixel.r, pixel.g, pixel.b);
@@ -205,10 +205,10 @@ public static partial class MSDF
         Vector2 scale,
         Vector2 translate)
     {
-        int contourCount = shape.Contours.Count;
-        int[] windings = new int[contourCount];
+        var contourCount = shape.Contours.Count;
+        var windings = new int[contourCount];
 
-        for (int i = 0; i < shape.Contours.Count; i++)
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
             windings[i] = shape.Contours[i].Winding;
         }
@@ -218,12 +218,12 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, (int)region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, (int)region.Bottom), output.Height);
 
-        double[] contourSD = new double[contourCount];
+        var contourSD = new double[contourCount];
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            int row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
-            for (int x = xStart; x < xEnd; x++)
+            var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
+            for (var x = xStart; x < xEnd; x++)
             {
                 output[x, row] = EvaluateSDF(
                     shape,
@@ -246,10 +246,10 @@ public static partial class MSDF
         Vector2 scale,
         Vector2 translate)
     {
-        int contourCount = shape.Contours.Count;
-        int[] windings = new int[contourCount];
+        var contourCount = shape.Contours.Count;
+        var windings = new int[contourCount];
 
-        for (int i = 0; i < shape.Contours.Count; i++)
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
             windings[i] = shape.Contours[i].Winding;
         }
@@ -259,12 +259,12 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, (int)region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, (int)region.Bottom), output.Height);
 
-        double[] contourSD = new double[contourCount];
+        var contourSD = new double[contourCount];
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            int row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
-            for (int x = xStart; x < xEnd; x++)
+            var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
+            for (var x = xStart; x < xEnd; x++)
             {
                 output[x, row] = (byte)Math.Min(
                     Math.Min(
@@ -286,23 +286,23 @@ public static partial class MSDF
         Vector2 scale,
         Vector2 translate)
     {
-        int contourCount = contourSD.Length;
+        var contourCount = contourSD.Length;
 
         double dummy;
-        Vector2 p = new Vector2(x + 0.5f, y + 0.5f) / scale - translate;
-        double negDist = -SignedDistance.Infinite.distance;
-        double posDist = SignedDistance.Infinite.distance;
-        int winding = 0;
+        var p = new Vector2(x + 0.5f, y + 0.5f) / scale - translate;
+        var negDist = -SignedDistance.Infinite.distance;
+        var posDist = SignedDistance.Infinite.distance;
+        var winding = 0;
 
-        for (int i = 0; i < contourCount; i++)
+        for (var i = 0; i < contourCount; i++)
         {
-            Contour contour = shape.Contours[i];
-            SignedDistance minDistance = new SignedDistance(-1e240, 1);
+            var contour = shape.Contours[i];
+            var minDistance = new SignedDistance(-1e240, 1);
 
-            for (int j = 0; j < contour.Edges.Count; j++)
+            for (var j = 0; j < contour.Edges.Count; j++)
             {
-                EdgeSegment edge = contour.Edges[j];
-                SignedDistance distance = edge.GetSignedDistance(p, out dummy);
+                var edge = contour.Edges[j];
+                var distance = edge.GetSignedDistance(p, out dummy);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -321,13 +321,13 @@ public static partial class MSDF
             }
         }
 
-        double sd = SignedDistance.Infinite.distance;
+        var sd = SignedDistance.Infinite.distance;
 
         if (posDist >= 0 && Math.Abs(posDist) <= Math.Abs(negDist))
         {
             sd = posDist;
             winding = 1;
-            for (int i = 0; i < contourCount; i++)
+            for (var i = 0; i < contourCount; i++)
             {
                 if (windings[i] > 0 && contourSD[i] > sd && Math.Abs(contourSD[i]) < Math.Abs(negDist))
                 {
@@ -339,7 +339,7 @@ public static partial class MSDF
         {
             sd = negDist;
             winding = -1;
-            for (int i = 0; i < contourCount; i++)
+            for (var i = 0; i < contourCount; i++)
             {
                 if (windings[i] < 0 && contourSD[i] < sd && Math.Abs(contourSD[i]) < Math.Abs(posDist))
                 {
@@ -348,7 +348,7 @@ public static partial class MSDF
             }
         }
 
-        for (int i = 0; i < contourCount; i++)
+        for (var i = 0; i < contourCount; i++)
         {
             if (windings[i] != winding && Math.Abs(contourSD[i]) < Math.Abs(sd))
             {
@@ -411,10 +411,10 @@ public static partial class MSDF
         Vector2 translate,
         double edgeThreshold)
     {
-        int contourCount = shape.Contours.Count;
-        int[] windings = new int[contourCount];
+        var contourCount = shape.Contours.Count;
+        var windings = new int[contourCount];
 
-        for (int i = 0; i < shape.Contours.Count; i++)
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
             windings[i] = shape.Contours[i].Winding;
         }
@@ -424,14 +424,14 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, (int)region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, (int)region.Bottom), output.Height);
 
-        MultiDistance[] contourSD = new MultiDistance[contourCount];
+        var contourSD = new MultiDistance[contourCount];
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            int row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
-            for (int x = xStart; x < xEnd; x++)
+            var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
+            for (var x = xStart; x < xEnd; x++)
             {
-                Vector2 p = (new Vector2(x, y) - region.Position - translate) / scale;
+                var p = (new Vector2(x, y) - region.Position - translate) / scale;
                 output[x, row] = EvaluateMSDF(shape, windings, contourSD, p, range);
             }
         }
@@ -446,10 +446,10 @@ public static partial class MSDF
         Vector2 translate,
         double edgeThreshold)
     {
-        int contourCount = shape.Contours.Count;
-        int[] windings = new int[contourCount];
+        var contourCount = shape.Contours.Count;
+        var windings = new int[contourCount];
 
-        for (int i = 0; i < shape.Contours.Count; i++)
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
             windings[i] = shape.Contours[i].Winding;
         }
@@ -459,14 +459,14 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, (int)region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, (int)region.Bottom), output.Height);
 
-        MultiDistance[] contourSD = new MultiDistance[contourCount];
+        var contourSD = new MultiDistance[contourCount];
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            int row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
-            for (int x = xStart; x < xEnd; x++)
+            var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
+            for (var x = xStart; x < xEnd; x++)
             {
-                Vector2 p = (new Vector2(x, y) - region.Position - translate) / scale;
+                var p = (new Vector2(x, y) - region.Position - translate) / scale;
                 output[x, row] = new Color3b(EvaluateMSDF(shape, windings, contourSD, p, range));
             }
         }
@@ -481,10 +481,10 @@ public static partial class MSDF
         Vector2 translate,
         double edgeThreshold)
     {
-        int contourCount = shape.Contours.Count;
-        int[] windings = new int[contourCount];
+        var contourCount = shape.Contours.Count;
+        var windings = new int[contourCount];
 
-        for (int i = 0; i < shape.Contours.Count; i++)
+        for (var i = 0; i < shape.Contours.Count; i++)
         {
             windings[i] = shape.Contours[i].Winding;
         }
@@ -494,14 +494,14 @@ public static partial class MSDF
         int xEnd = Math.Min(Math.Max(0, (int)region.Right), output.Width);
         int yEnd = Math.Min(Math.Max(0, (int)region.Bottom), output.Height);
 
-        MultiDistance[] contourSD = new MultiDistance[contourCount];
+        var contourSD = new MultiDistance[contourCount];
 
-        for (int y = yStart; y < yEnd; y++)
+        for (var y = yStart; y < yEnd; y++)
         {
-            int row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
-            for (int x = xStart; x < xEnd; x++)
+            var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
+            for (var x = xStart; x < xEnd; x++)
             {
-                Vector2 p = (new Vector2(x, y) - region.Position - translate) / scale;
+                var p = (new Vector2(x, y) - region.Position - translate) / scale;
                 output[x, row] = new Color4b(EvaluateMSDF(shape, windings, contourSD, p, range), 255);
             }
         }
@@ -509,49 +509,49 @@ public static partial class MSDF
 
     static Color3 EvaluateMSDF(Shape shape, int[] windings, MultiDistance[] contourSD, Vector2 p, double range)
     {
-        int contourCount = contourSD.Length;
+        var contourCount = contourSD.Length;
         p += new Vector2(0.5f, 0.5f);
 
-        EdgePoint sr = new EdgePoint
+        var sr = new EdgePoint
         {
             minDistance = new SignedDistance(-1e240, 1)
         };
-        EdgePoint sg = new EdgePoint
+        var sg = new EdgePoint
         {
             minDistance = new SignedDistance(-1e240, 1)
         };
-        EdgePoint sb = new EdgePoint
+        var sb = new EdgePoint
         {
             minDistance = new SignedDistance(-1e240, 1)
         };
 
-        double d = Math.Abs(SignedDistance.Infinite.distance);
-        double negDist = -SignedDistance.Infinite.distance;
-        double posDist = SignedDistance.Infinite.distance;
-        int winding = 0;
+        var d = Math.Abs(SignedDistance.Infinite.distance);
+        var negDist = -SignedDistance.Infinite.distance;
+        var posDist = SignedDistance.Infinite.distance;
+        var winding = 0;
 
-        for (int i = 0; i < contourCount; i++)
+        for (var i = 0; i < contourCount; i++)
         {
-            Contour contour = shape.Contours[i];
-            EdgePoint r = new EdgePoint
+            var contour = shape.Contours[i];
+            var r = new EdgePoint
             {
                 minDistance = new SignedDistance(-1e240, 1)
             };
-            EdgePoint g = new EdgePoint
+            var g = new EdgePoint
             {
                 minDistance = new SignedDistance(-1e240, 1)
             };
-            EdgePoint b = new EdgePoint
+            var b = new EdgePoint
             {
                 minDistance = new SignedDistance(-1e240, 1)
             };
 
-            for (int j = 0; j < contour.Edges.Count; j++)
+            for (var j = 0; j < contour.Edges.Count; j++)
             {
-                EdgeSegment edge = contour.Edges[j];
+                var edge = contour.Edges[j];
                 double param;
 
-                SignedDistance distance = edge.GetSignedDistance(p, out param);
+                var distance = edge.GetSignedDistance(p, out param);
                 if ((edge.Color & EdgeColor.Red) == EdgeColor.Red && distance < r.minDistance)
                 {
                     r.minDistance = distance;
@@ -589,7 +589,7 @@ public static partial class MSDF
                 sb = b;
             }
 
-            double medMinDistance =
+            var medMinDistance =
                 Math.Abs(Median(r.minDistance.distance, g.minDistance.distance, b.minDistance.distance));
 
             if (medMinDistance < d)
@@ -646,7 +646,7 @@ public static partial class MSDF
             sb.nearEdge.DistanceToPseudoDistance(ref sb.minDistance, p, sb.nearParam);
         }
 
-        MultiDistance msd = new MultiDistance
+        var msd = new MultiDistance
         {
             r = SignedDistance.Infinite.distance,
             g = SignedDistance.Infinite.distance,
@@ -658,7 +658,7 @@ public static partial class MSDF
         {
             msd.med = SignedDistance.Infinite.distance;
             winding = 1;
-            for (int i = 0; i < contourCount; i++)
+            for (var i = 0; i < contourCount; i++)
             {
                 if (windings[i] > 0 && contourSD[i].med > msd.med && Math.Abs(contourSD[i].med) < Math.Abs(negDist))
                 {
@@ -670,7 +670,7 @@ public static partial class MSDF
         {
             msd.med = -SignedDistance.Infinite.distance;
             winding = -1;
-            for (int i = 0; i < contourCount; i++)
+            for (var i = 0; i < contourCount; i++)
             {
                 if (windings[i] < 0 && contourSD[i].med < msd.med && Math.Abs(contourSD[i].med) < Math.Abs(posDist))
                 {
@@ -679,7 +679,7 @@ public static partial class MSDF
             }
         }
 
-        for (int i = 0; i < contourCount; i++)
+        for (var i = 0; i < contourCount; i++)
         {
             if (windings[i] != winding && Math.Abs(contourSD[i].med) < Math.Abs(msd.med))
             {
