@@ -1,36 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//
+//  SPDX-FileName: SignedDistance.cs
+//  SPDX-FileCopyrightText: Copyright (c) Jarl Gullberg
+//  SPDX-License-Identifier: MIT
+//
 
-namespace MSDFGen {
-    public struct SignedDistance {
-        public double distance;
-        public double dot;
+using System;
 
-        public static SignedDistance Infinite { get; } = new SignedDistance(-1e240, 1);
+namespace MSDFGen;
 
-        public SignedDistance(double distance, double dot) {
-            this.distance = distance;
-            this.dot = dot;
-        }
+public struct SignedDistance
+{
+    public double distance;
+    public double dot;
 
-        public static bool operator < (SignedDistance a, SignedDistance b) {
-            return Math.Abs(a.distance) < Math.Abs(b.distance) ||
-                (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot < b.dot);
-        }
+    public static SignedDistance Infinite { get; } = new SignedDistance(-1e240, 1);
 
-        public static bool operator > (SignedDistance a, SignedDistance b) {
-            return Math.Abs(a.distance) > Math.Abs(b.distance) ||
-                (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot > b.dot);
-        }
+    public SignedDistance(double distance, double dot)
+    {
+        this.distance = distance;
+        this.dot = dot;
+    }
 
-        public static bool operator <= (SignedDistance a, SignedDistance b) {
-            return Math.Abs(a.distance) < Math.Abs(b.distance) ||
-                (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot <= b.dot);
-        }
+    public static bool operator <(SignedDistance a, SignedDistance b)
+    {
+        return Math.Abs(a.distance) < Math.Abs(b.distance) ||
+               (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot < b.dot);
+    }
 
-        public static bool operator >= (SignedDistance a, SignedDistance b) {
-            return Math.Abs(a.distance) > Math.Abs(b.distance) ||
-                (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot >= b.dot);
-        }
+    public static bool operator >(SignedDistance a, SignedDistance b)
+    {
+        return Math.Abs(a.distance) > Math.Abs(b.distance) ||
+               (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot > b.dot);
+    }
+
+    public static bool operator <=(SignedDistance a, SignedDistance b)
+    {
+        return Math.Abs(a.distance) < Math.Abs(b.distance) ||
+               (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot <= b.dot);
+    }
+
+    public static bool operator >=(SignedDistance a, SignedDistance b)
+    {
+        return Math.Abs(a.distance) > Math.Abs(b.distance) ||
+               (Math.Abs(a.distance) == Math.Abs(b.distance) && a.dot >= b.dot);
     }
 }
