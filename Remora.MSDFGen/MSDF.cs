@@ -22,8 +22,8 @@ public static partial class MSDF
 {
     public static bool PixelClash(Color4 a, Color4 b, double threshold)
     {
-        var aIn = ((a.r > .5f) ? 1 : 0) + ((a.g > .5f) ? 1 : 0) + ((a.b > .5f) ? 1 : 0) >= 2;
-        var bIn = ((b.r > .5f) ? 1 : 0) + ((b.g > .5f) ? 1 : 0) + ((b.b > .5f) ? 1 : 0) >= 2;
+        var aIn = (a.r > .5f ? 1 : 0) + (a.g > .5f ? 1 : 0) + (a.b > .5f ? 1 : 0) >= 2;
+        var bIn = (b.r > .5f ? 1 : 0) + (b.g > .5f ? 1 : 0) + (b.b > .5f ? 1 : 0) >= 2;
         if (aIn != bIn)
         {
             return false;
@@ -39,21 +39,21 @@ public static partial class MSDF
 
         float aa, ab, ba, bb, ac, bc;
 
-        if ((a.r > .5f) != (b.r > .5f) &&
-            (a.r < .5f) != (b.r < .5f))
+        if (a.r > .5f != b.r > .5f &&
+            a.r < .5f != b.r < .5f)
         {
             aa = a.r;
             ba = b.r;
-            if ((a.g > .5f) != (b.g > .5f) &&
-                (a.g < .5f) != (b.g < .5f))
+            if (a.g > .5f != b.g > .5f &&
+                a.g < .5f != b.g < .5f)
             {
                 ab = a.g;
                 bb = b.g;
                 ac = a.b;
                 bc = b.b;
             }
-            else if ((a.b > .5f) != (b.b > .5f) &&
-                     (a.b < .5f) != (b.b < .5f))
+            else if (a.b > .5f != b.b > .5f &&
+                     a.b < .5f != b.b < .5f)
             {
                 ab = a.b;
                 bb = b.b;
@@ -65,10 +65,10 @@ public static partial class MSDF
                 return false;
             }
         }
-        else if ((a.g > .5f) != (b.g > .5f) &&
-                 (a.g < .5f) != (b.g < .5f) &&
-                 (a.b > .5f) != (b.b > .5f) &&
-                 (a.b < .5f) != (b.b < .5f))
+        else if (a.g > .5f != b.g > .5f &&
+                 a.g < .5f != b.g < .5f &&
+                 a.b > .5f != b.b > .5f &&
+                 a.b < .5f != b.b < .5f)
         {
             aa = a.g;
             ba = b.g;
@@ -82,8 +82,8 @@ public static partial class MSDF
             return false;
         }
 
-        return (Math.Abs(aa - ba) >= threshold) &&
-               (Math.Abs(ab - bb) >= threshold) &&
+        return Math.Abs(aa - ba) >= threshold &&
+               Math.Abs(ab - bb) >= threshold &&
                Math.Abs(ac - .5f) >= Math.Abs(bc - .5f);
     }
 

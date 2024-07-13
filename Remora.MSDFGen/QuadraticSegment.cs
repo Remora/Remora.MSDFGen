@@ -105,7 +105,7 @@ public class QuadraticSegment : EdgeSegment
     {
         PointBounds(p0, ref left, ref bottom, ref right, ref top);
         PointBounds(p2, ref left, ref bottom, ref right, ref top);
-        var bot = (p1 - p0) - (p2 - p1);
+        var bot = p1 - p0 - (p2 - p1);
 
         if (bot.X != 0)
         {

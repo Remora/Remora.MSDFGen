@@ -236,7 +236,7 @@ public abstract class EdgeSegment
             var B = A == 0 ? 0 : q / A;
             a /= 3;
 
-            roots.x0 = (A + B) - a;
+            roots.x0 = A + B - a;
             roots.x1 = (-0.5 * (A + B)) - a;
             roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
 

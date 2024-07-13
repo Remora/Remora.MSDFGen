@@ -157,7 +157,7 @@ public static partial class MSDF
                             SwitchColor(
                                 ref color,
                                 ref seed,
-                                (EdgeColor)(((spline == cornerCount - 1) ? 1 : 0) * (int)initialColor));
+                                (EdgeColor)((spline == cornerCount - 1 ? 1 : 0) * (int)initialColor));
                         }
 
                         contour.Edges[index].Color = color;

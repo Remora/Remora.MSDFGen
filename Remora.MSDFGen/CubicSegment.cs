@@ -78,7 +78,7 @@ public class CubicSegment : EdgeSegment
         var qa = p0 - origin;
         var ab = p1 - p0;
         var br = p2 - p1 - ab;
-        var _as = (p3 - p2) - (p2 - p1) - br;
+        var _as = p3 - p2 - (p2 - p1) - br;
 
         var epDir = GetDirection(0);
         double minDistance = NonZeroSign(Cross(epDir, qa)) * qa.Length();
