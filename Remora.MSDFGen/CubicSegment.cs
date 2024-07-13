@@ -16,7 +16,8 @@ public class CubicSegment : EdgeSegment
     private Vector2 p2;
     private Vector2 p3;
 
-    public CubicSegment(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, EdgeColor color) : base(color)
+    public CubicSegment(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, EdgeColor color)
+        : base(color)
     {
         this.p0 = p0;
         this.p1 = p1;
@@ -84,15 +85,13 @@ public class CubicSegment : EdgeSegment
         double minDistance = NonZeroSign(Cross(epDir, qa)) * qa.Length();
         t = -Vector2.Dot(qa, epDir) / Vector2.Dot(epDir, epDir);
 
-        {
-            epDir = GetDirection(1);
-            double distance = NonZeroSign(Cross(epDir, p3 - origin)) * (p3 - origin).Length();
+        epDir = GetDirection(1);
+        double distance = NonZeroSign(Cross(epDir, p3 - origin)) * (p3 - origin).Length();
 
-            if (Math.Abs(distance) < Math.Abs(minDistance))
-            {
-                minDistance = distance;
-                t = Vector2.Dot(origin + epDir - p3, epDir) / Vector2.Dot(epDir, epDir);
-            }
+        if (Math.Abs(distance) < Math.Abs(minDistance))
+        {
+            minDistance = distance;
+            t = Vector2.Dot(origin + epDir - p3, epDir) / Vector2.Dot(epDir, epDir);
         }
 
         for (var i = 0; i < 4; i++)
@@ -102,11 +101,11 @@ public class CubicSegment : EdgeSegment
             while (true)
             {
                 var qpt = GetPoint(_t) - origin;
-                double distance = NonZeroSign(Cross(GetDirection(_t), qpt)) * qpt.Length();
+                double stepDistance = NonZeroSign(Cross(GetDirection(_t), qpt)) * qpt.Length();
 
-                if (Math.Abs(distance) < Math.Abs(minDistance))
+                if (Math.Abs(stepDistance) < Math.Abs(minDistance))
                 {
-                    minDistance = distance;
+                    minDistance = stepDistance;
                     t = _t;
                 }
 

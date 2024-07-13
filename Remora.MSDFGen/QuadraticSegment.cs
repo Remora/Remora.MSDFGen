@@ -15,7 +15,8 @@ public class QuadraticSegment : EdgeSegment
     private Vector2 p1;
     private Vector2 p2;
 
-    public QuadraticSegment(Vector2 p0, Vector2 p1, Vector2 p2, EdgeColor color) : base(color)
+    public QuadraticSegment(Vector2 p0, Vector2 p1, Vector2 p2, EdgeColor color)
+		: base(color)
     {
         this.p0 = p0;
         this.p1 = p1;
@@ -61,13 +62,11 @@ public class QuadraticSegment : EdgeSegment
         double minDistance = NonZeroSign(Cross(ab, qa)) * qa.Length();
         t = -Vector2.Dot(qa, ab) / Vector2.Dot(ab, ab);
 
+        double distance = NonZeroSign(Cross(p2 - p1, p2 - origin)) * (p2 - origin).Length();
+        if (Math.Abs(distance) < Math.Abs(minDistance))
         {
-            double distance = NonZeroSign(Cross(p2 - p1, p2 - origin)) * (p2 - origin).Length();
-            if (Math.Abs(distance) < Math.Abs(minDistance))
-            {
-                minDistance = distance;
-                t = Vector2.Dot(origin - p1, p2 - p1) / Vector2.Dot(p2 - p1, p2 - p1);
-            }
+            minDistance = distance;
+            t = Vector2.Dot(origin - p1, p2 - p1) / Vector2.Dot(p2 - p1, p2 - p1);
         }
 
         for (var i = 0; i < solutions; i++)
@@ -75,11 +74,11 @@ public class QuadraticSegment : EdgeSegment
             if (roots[i] > 0 && roots[i] < 1)
             {
                 var endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
-                double distance = NonZeroSign(Cross(p2 - p0, endPoint - origin)) * (endPoint - origin).Length();
+                double solutionDistance = NonZeroSign(Cross(p2 - p0, endPoint - origin)) * (endPoint - origin).Length();
 
-                if (Math.Abs(distance) <= Math.Abs(minDistance))
+                if (Math.Abs(solutionDistance) <= Math.Abs(minDistance))
                 {
-                    minDistance = distance;
+                    minDistance = solutionDistance;
                     t = roots[i];
                 }
             }

@@ -14,7 +14,8 @@ public class LinearSegment : EdgeSegment
     private Vector2 p0;
     private Vector2 p1;
 
-    public LinearSegment(Vector2 p0, Vector2 p1, EdgeColor color) : base(color)
+    public LinearSegment(Vector2 p0, Vector2 p1, EdgeColor color)
+        : base(color)
     {
         this.p0 = p0;
         this.p1 = p1;
