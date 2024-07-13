@@ -31,8 +31,16 @@ public class Shape
                 for (int j = 0; j < contour.Edges.Count; j++)
                 {
                     EdgeSegment edge = contour.Edges[j];
-                    if (edge == null) return false;
-                    if (edge.GetPoint(0) != corner) return false;
+                    if (edge == null)
+                    {
+                        return false;
+                    }
+
+                    if (edge.GetPoint(0) != corner)
+                    {
+                        return false;
+                    }
+
                     corner = edge.GetPoint(1);
                 }
             }

@@ -83,7 +83,10 @@ public static partial class MSDF
 
     public static Shape LoadGlyph(Face face, int unicode)
     {
-        if (face == null) throw new ArgumentNullException(nameof(face));
+        if (face == null)
+        {
+            throw new ArgumentNullException(nameof(face));
+        }
 
         face.LoadChar((uint)unicode, LoadFlags.NoScale, LoadTarget.Normal);
 

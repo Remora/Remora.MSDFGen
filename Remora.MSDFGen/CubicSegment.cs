@@ -57,8 +57,15 @@ public class CubicSegment : EdgeSegment
 
         if (tangent == Vector2.Zero)
         {
-            if (t == 0) return p2 - p0;
-            if (t == 1) return p3 - p1;
+            if (t == 0)
+            {
+                return p2 - p0;
+            }
+
+            if (t == 1)
+            {
+                return p3 - p1;
+            }
         }
 
         return tangent;
@@ -101,12 +108,19 @@ public class CubicSegment : EdgeSegment
                     t = _t;
                 }
 
-                if (step == 4) break;
+                if (step == 4)
+                {
+                    break;
+                }
 
                 Vector2 d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
                 Vector2 d2 = 6 * _as * (float)t + 6 * br;
                 _t -= Vector2.Dot(qpt, d1) / (Vector2.Dot(d1, d1) + Vector2.Dot(qpt, d2));
-                if (t < 0 || t > 1) break;
+                if (t < 0 || t > 1)
+                {
+                    break;
+                }
+
                 step++;
             }
         }

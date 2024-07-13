@@ -46,7 +46,10 @@ public class LinearSegment : EdgeSegment
         if (t > 0 && t < 1)
         {
             double orthoDistance = Vector2.Dot(GetOrthonormal(ab, false, false), aq);
-            if (Math.Abs(orthoDistance) < endPointDistance) return new SignedDistance(orthoDistance, 0);
+            if (Math.Abs(orthoDistance) < endPointDistance)
+            {
+                return new SignedDistance(orthoDistance, 0);
+            }
         }
 
         return new SignedDistance(

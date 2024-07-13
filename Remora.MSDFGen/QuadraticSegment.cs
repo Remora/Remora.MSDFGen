@@ -116,13 +116,19 @@ public class QuadraticSegment : EdgeSegment
         if (bot.X != 0)
         {
             double param = (p1.X - p0.X) / bot.X;
-            if (param > 0 && param < 1) PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
+            if (param > 0 && param < 1)
+            {
+                PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
+            }
         }
 
         if (bot.Y != 0)
         {
             double param = (p1.Y - p0.Y) / bot.Y;
-            if (param > 0 && param < 1) PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
+            if (param > 0 && param < 1)
+            {
+                PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
+            }
         }
     }
 
@@ -133,7 +139,10 @@ public class QuadraticSegment : EdgeSegment
 
         p1 += (float)(Cross(p0 - p1, to - p0) / Cross(p0 - p1, p2 - p1)) * (p2 - p1);
         p0 = to;
-        if (Vector2.Dot(origSDir, p0 - p1) < 0) p1 = origP1;
+        if (Vector2.Dot(origSDir, p0 - p1) < 0)
+        {
+            p1 = origP1;
+        }
     }
 
     public override void MoveEndPoint(Vector2 to)
@@ -143,7 +152,10 @@ public class QuadraticSegment : EdgeSegment
 
         p1 += (float)(Cross(p2 - p1, to - p2) / Cross(p2 - p1, p0 - p1)) * (p0 - p1);
         p2 = to;
-        if (Vector2.Dot(origEDir, p2 - p1) < 0) p1 = origP1;
+        if (Vector2.Dot(origEDir, p2 - p1) < 0)
+        {
+            p1 = origP1;
+        }
     }
 
     public override void SplitInThirds(out EdgeSegment part1, out EdgeSegment part2, out EdgeSegment part3)

@@ -24,13 +24,18 @@ public static partial class MSDF
     {
         bool aIn = ((a.r > .5f) ? 1 : 0) + ((a.g > .5f) ? 1 : 0) + ((a.b > .5f) ? 1 : 0) >= 2;
         bool bIn = ((b.r > .5f) ? 1 : 0) + ((b.g > .5f) ? 1 : 0) + ((b.b > .5f) ? 1 : 0) >= 2;
-        if (aIn != bIn) return false;
+        if (aIn != bIn)
+        {
+            return false;
+        }
 
         if ((a.r > .5f && a.g > .5f && a.b > .5f) ||
             (a.r < .5f && a.g < .5f && a.b < .5f) ||
             (b.r > .5f && b.g > .5f && b.b > .5f) ||
             (b.r < .5f && b.g < .5f && b.b < .5f))
+        {
             return false;
+        }
 
         float aa, ab, ba, bb, ac, bc;
 
@@ -56,7 +61,9 @@ public static partial class MSDF
                 bc = b.g;
             }
             else
+            {
                 return false;
+            }
         }
         else if ((a.g > .5f) != (b.g > .5f) &&
                  (a.g < .5f) != (b.g < .5f) &&
@@ -71,7 +78,9 @@ public static partial class MSDF
             bc = b.r;
         }
         else
+        {
             return false;
+        }
 
         return (Math.Abs(aa - ba) >= threshold) &&
                (Math.Abs(ab - bb) >= threshold) &&
@@ -565,9 +574,20 @@ public static partial class MSDF
                 }
             }
 
-            if (r.minDistance < sr.minDistance) sr = r;
-            if (g.minDistance < sg.minDistance) sg = g;
-            if (b.minDistance < sb.minDistance) sb = b;
+            if (r.minDistance < sr.minDistance)
+            {
+                sr = r;
+            }
+
+            if (g.minDistance < sg.minDistance)
+            {
+                sg = g;
+            }
+
+            if (b.minDistance < sb.minDistance)
+            {
+                sb = b;
+            }
 
             double medMinDistance =
                 Math.Abs(Median(r.minDistance.distance, g.minDistance.distance, b.minDistance.distance));
@@ -611,9 +631,20 @@ public static partial class MSDF
             }
         }
 
-        if (sr.nearEdge != null) sr.nearEdge.DistanceToPseudoDistance(ref sr.minDistance, p, sr.nearParam);
-        if (sg.nearEdge != null) sg.nearEdge.DistanceToPseudoDistance(ref sg.minDistance, p, sg.nearParam);
-        if (sb.nearEdge != null) sb.nearEdge.DistanceToPseudoDistance(ref sb.minDistance, p, sb.nearParam);
+        if (sr.nearEdge != null)
+        {
+            sr.nearEdge.DistanceToPseudoDistance(ref sr.minDistance, p, sr.nearParam);
+        }
+
+        if (sg.nearEdge != null)
+        {
+            sg.nearEdge.DistanceToPseudoDistance(ref sg.minDistance, p, sg.nearParam);
+        }
+
+        if (sb.nearEdge != null)
+        {
+            sb.nearEdge.DistanceToPseudoDistance(ref sb.minDistance, p, sb.nearParam);
+        }
 
         MultiDistance msd = new MultiDistance
         {

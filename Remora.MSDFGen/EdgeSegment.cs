@@ -86,16 +86,35 @@ public abstract class EdgeSegment
     {
         float len = v.Length();
 
-        if (len == 0) return polarity ? new Vector2(0, !allowZero ? 1 : 0) : new Vector2(0, -(!allowZero ? 1 : 0));
+        if (len == 0)
+        {
+            return polarity ? new Vector2(0, !allowZero ? 1 : 0) : new Vector2(0, -(!allowZero ? 1 : 0));
+        }
+
         return polarity ? new Vector2(-v.Y / len, v.X / len) : new Vector2(v.Y / len, -v.X / len);
     }
 
     protected void PointBounds(Vector2 p, ref double left, ref double bottom, ref double right, ref double top)
     {
-        if (p.X < left) left = p.X;
-        if (p.Y < bottom) bottom = p.Y;
-        if (p.X > right) right = p.X;
-        if (p.Y > top) top = p.Y;
+        if (p.X < left)
+        {
+            left = p.X;
+        }
+
+        if (p.Y < bottom)
+        {
+            bottom = p.Y;
+        }
+
+        if (p.X > right)
+        {
+            right = p.X;
+        }
+
+        if (p.Y > top)
+        {
+            top = p.Y;
+        }
     }
 
     public static double Cross(Vector2 a, Vector2 b)
@@ -106,7 +125,11 @@ public abstract class EdgeSegment
     protected int NonZeroSign(double d)
     {
         int result = Math.Sign(d);
-        if (result == 0) return 1;
+        if (result == 0)
+        {
+            return 1;
+        }
+
         return result;
     }
 
@@ -137,7 +160,11 @@ public abstract class EdgeSegment
         {
             if (Math.Abs(b) < 1e-14)
             {
-                if (c == 0) return -1;
+                if (c == 0)
+                {
+                    return -1;
+                }
+
                 return 0;
             }
 
@@ -176,8 +203,16 @@ public abstract class EdgeSegment
         if (rSquared < qCubed)
         {
             double t = r / Math.Sqrt(qCubed);
-            if (t < -1) t = -1;
-            if (t > 1) t = 1;
+            if (t < -1)
+            {
+                t = -1;
+            }
+
+            if (t > 1)
+            {
+                t = 1;
+            }
+
             t = Math.Acos(t);
             a /= 3;
             q = -2 * Math.Sqrt(q);
@@ -194,7 +229,11 @@ public abstract class EdgeSegment
                 Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
                 1 / 3d
             );
-            if (r < 0) A = -A;
+            if (r < 0)
+            {
+                A = -A;
+            }
+
             double B = A == 0 ? 0 : q / A;
             a /= 3;
 
@@ -202,7 +241,11 @@ public abstract class EdgeSegment
             roots.x1 = -0.5 * (A + B) - a;
             roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
 
-            if (Math.Abs(roots.x2) < 1e-14) return 2;
+            if (Math.Abs(roots.x2) < 1e-14)
+            {
+                return 2;
+            }
+
             return 1;
         }
     }

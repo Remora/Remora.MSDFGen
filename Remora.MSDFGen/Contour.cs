@@ -31,7 +31,10 @@ public class Contour
     {
         get
         {
-            if (Edges.Count == 0) return 0;
+            if (Edges.Count == 0)
+            {
+                return 0;
+            }
 
             double total = 0;
 
