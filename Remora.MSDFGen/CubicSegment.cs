@@ -125,7 +125,7 @@ public class CubicSegment : EdgeSegment
             }
         }
 
-        if (t >= 0 && t <= 1)
+        if (t is >= 0 and <= 1)
         {
             return new SignedDistance(minDistance, 0);
         }

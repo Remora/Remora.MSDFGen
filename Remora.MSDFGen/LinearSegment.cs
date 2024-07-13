@@ -43,7 +43,7 @@ public class LinearSegment : EdgeSegment
         var eq = (t > 0.5d ? p1 : p0) - origin;
         double endPointDistance = eq.Length();
 
-        if (t > 0 && t < 1)
+        if (t is > 0 and < 1)
         {
             double orthoDistance = Vector2.Dot(GetOrthonormal(ab, false, false), aq);
             if (Math.Abs(orthoDistance) < endPointDistance)

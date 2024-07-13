@@ -85,7 +85,7 @@ public class QuadraticSegment : EdgeSegment
             }
         }
 
-        if (t >= 0 && t <= 1)
+        if (t is >= 0 and <= 1)
         {
             return new SignedDistance(minDistance, 0);
         }
@@ -116,7 +116,7 @@ public class QuadraticSegment : EdgeSegment
         if (bot.X != 0)
         {
             double param = (p1.X - p0.X) / bot.X;
-            if (param > 0 && param < 1)
+            if (param is > 0 and < 1)
             {
                 PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
             }
@@ -125,7 +125,7 @@ public class QuadraticSegment : EdgeSegment
         if (bot.Y != 0)
         {
             double param = (p1.Y - p0.Y) / bot.Y;
-            if (param > 0 && param < 1)
+            if (param is > 0 and < 1)
             {
                 PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
             }
