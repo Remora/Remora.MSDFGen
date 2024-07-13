@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace MSDFGen;
+namespace Remora.MSDFGen;
 
 public class Contour
 {

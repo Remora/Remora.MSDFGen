@@ -8,7 +8,7 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace MSDFGen;
+namespace Remora.MSDFGen;
 
 public static partial class MSDF
 {

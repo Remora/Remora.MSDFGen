@@ -6,7 +6,7 @@
 
 using System;
 
-namespace MSDFGen;
+namespace Remora.MSDFGen;
 
 public struct SignedDistance
 {

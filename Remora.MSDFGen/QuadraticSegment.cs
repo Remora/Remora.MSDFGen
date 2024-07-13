@@ -7,7 +7,7 @@
 using System;
 using System.Numerics;
 
-namespace MSDFGen;
+namespace Remora.MSDFGen;
 
 public class QuadraticSegment : EdgeSegment
 {
