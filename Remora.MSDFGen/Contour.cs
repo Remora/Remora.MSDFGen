@@ -62,7 +62,7 @@ public class Contour
             }
             else
             {
-                var prev = Edges[Edges.Count - 1].GetPoint(0);
+                var prev = Edges[^1].GetPoint(0);
                 for (var i = 0; i < Edges.Count; i++)
                 {
                     var cur = Edges[i].GetPoint(0);

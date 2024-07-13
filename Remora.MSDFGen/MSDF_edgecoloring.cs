@@ -52,7 +52,7 @@ public static partial class MSDF
 
             if (!(contour.Edges.Count == 0))
             {
-                var prevDirection = contour.Edges[contour.Edges.Count - 1].GetDirection(1);
+                var prevDirection = contour.Edges[^1].GetDirection(1);
 
                 for (var j = 0; j < contour.Edges.Count; j++)
                 {

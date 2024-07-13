@@ -27,7 +27,7 @@ public class Shape
             var contour = Contours[i];
             if (contour.Edges.Count > 0)
             {
-                var corner = contour.Edges[contour.Edges.Count - 1].GetPoint(1);
+                var corner = contour.Edges[^1].GetPoint(1);
                 for (var j = 0; j < contour.Edges.Count; j++)
                 {
                     var edge = contour.Edges[j];
