@@ -11,9 +11,9 @@ namespace Remora.MSDFGen;
 
 public class QuadraticSegment : EdgeSegment
 {
-    Vector2 p0;
-    Vector2 p1;
-    Vector2 p2;
+    private Vector2 p0;
+    private Vector2 p1;
+    private Vector2 p2;
 
     public QuadraticSegment(Vector2 p0, Vector2 p1, Vector2 p2, EdgeColor color) : base(color)
     {

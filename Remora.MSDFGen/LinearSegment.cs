@@ -11,8 +11,8 @@ namespace Remora.MSDFGen;
 
 public class LinearSegment : EdgeSegment
 {
-    Vector2 p0;
-    Vector2 p1;
+    private Vector2 p0;
+    private Vector2 p1;
 
     public LinearSegment(Vector2 p0, Vector2 p1, EdgeColor color) : base(color)
     {

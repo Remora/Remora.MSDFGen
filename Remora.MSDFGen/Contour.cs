@@ -75,7 +75,7 @@ public class Contour
         }
     }
 
-    double Shoelace(Vector2 a, Vector2 b)
+    private double Shoelace(Vector2 a, Vector2 b)
     {
         return (b.X - a.X) * (a.Y + b.Y);
     }

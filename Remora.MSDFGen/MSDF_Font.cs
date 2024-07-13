@@ -12,19 +12,19 @@ namespace Remora.MSDFGen;
 
 public static partial class MSDF
 {
-    struct Context
+    private struct Context
     {
         public Vector2 position;
         public Shape shape;
         public Contour contour;
     }
 
-    static Vector2 ToVector2(FTVector vector)
+    private static Vector2 ToVector2(FTVector vector)
     {
         return new Vector2(vector.X.Value / 64f, vector.Y.Value / 64f);
     }
 
-    static int MoveTo(ref FTVector to, IntPtr user)
+    private static int MoveTo(ref FTVector to, IntPtr user)
     {
         unsafe
         {
@@ -38,7 +38,7 @@ public static partial class MSDF
         }
     }
 
-    static int LineTo(ref FTVector to, IntPtr user)
+    private static int LineTo(ref FTVector to, IntPtr user)
     {
         unsafe
         {
@@ -50,7 +50,7 @@ public static partial class MSDF
         }
     }
 
-    static int ConicTo(ref FTVector control, ref FTVector to, IntPtr user)
+    private static int ConicTo(ref FTVector control, ref FTVector to, IntPtr user)
     {
         unsafe
         {
@@ -63,7 +63,7 @@ public static partial class MSDF
         }
     }
 
-    static int CubicTo(ref FTVector control1, ref FTVector control2, ref FTVector to, IntPtr user)
+    private static int CubicTo(ref FTVector control1, ref FTVector control2, ref FTVector to, IntPtr user)
     {
         unsafe
         {

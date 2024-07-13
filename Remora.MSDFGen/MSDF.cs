@@ -10,7 +10,7 @@ using System.Numerics;
 
 namespace Remora.MSDFGen;
 
-struct MultiDistance
+internal struct MultiDistance
 {
     public double r;
     public double g;
@@ -94,7 +94,7 @@ public static partial class MSDF
         return PixelClash(af, bf, threshold);
     }
 
-    struct Clash
+    private struct Clash
     {
         public int x;
         public int y;
@@ -172,17 +172,17 @@ public static partial class MSDF
         }
     }
 
-    static float Median(float a, float b, float c)
+    private static float Median(float a, float b, float c)
     {
         return Math.Max(Math.Min(a, b), Math.Min(Math.Max(a, b), c));
     }
 
-    static double Median(double a, double b, double c)
+    private static double Median(double a, double b, double c)
     {
         return Math.Max(Math.Min(a, b), Math.Min(Math.Max(a, b), c));
     }
 
-    static int Median(int a, int b, int c)
+    private static int Median(int a, int b, int c)
     {
         return Math.Max(Math.Min(a, b), Math.Min(Math.Max(a, b), c));
     }
@@ -276,7 +276,7 @@ public static partial class MSDF
         }
     }
 
-    static float EvaluateSDF(
+    private static float EvaluateSDF(
         Shape shape,
         int[] windings,
         double[] contourSD,
@@ -359,7 +359,7 @@ public static partial class MSDF
         return (float)(sd / range) + 0.5f;
     }
 
-    struct EdgePoint
+    private struct EdgePoint
     {
         public SignedDistance minDistance;
         public EdgeSegment nearEdge;
@@ -507,7 +507,7 @@ public static partial class MSDF
         }
     }
 
-    static Color3 EvaluateMSDF(Shape shape, int[] windings, MultiDistance[] contourSD, Vector2 p, double range)
+    private static Color3 EvaluateMSDF(Shape shape, int[] windings, MultiDistance[] contourSD, Vector2 p, double range)
     {
         var contourCount = contourSD.Length;
         p += new Vector2(0.5f, 0.5f);

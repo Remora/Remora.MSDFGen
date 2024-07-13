@@ -12,14 +12,14 @@ namespace Remora.MSDFGen;
 
 public static partial class MSDF
 {
-    static bool IsCorner(Vector2 aDir, Vector2 bDir, double crossThreshold)
+    private static bool IsCorner(Vector2 aDir, Vector2 bDir, double crossThreshold)
     {
         return Vector2.Dot(aDir, bDir) <= 0 || Math.Abs(EdgeSegment.Cross(aDir, bDir)) > crossThreshold;
     }
 
-    static EdgeColor[] switchColors = { EdgeColor.Cyan, EdgeColor.Magenta, EdgeColor.Yellow };
+    private static EdgeColor[] switchColors = { EdgeColor.Cyan, EdgeColor.Magenta, EdgeColor.Yellow };
 
-    static void SwitchColor(ref EdgeColor color, ref ulong seed, EdgeColor banned)
+    private static void SwitchColor(ref EdgeColor color, ref ulong seed, EdgeColor banned)
     {
         var combined = color & banned;
 

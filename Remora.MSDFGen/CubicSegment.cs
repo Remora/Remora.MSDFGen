@@ -11,10 +11,10 @@ namespace Remora.MSDFGen;
 
 public class CubicSegment : EdgeSegment
 {
-    Vector2 p0;
-    Vector2 p1;
-    Vector2 p2;
-    Vector2 p3;
+    private Vector2 p0;
+    private Vector2 p1;
+    private Vector2 p2;
+    private Vector2 p3;
 
     public CubicSegment(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, EdgeColor color) : base(color)
     {
