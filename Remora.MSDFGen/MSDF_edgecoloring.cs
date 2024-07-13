@@ -49,7 +49,7 @@ public static partial class MSDF
         {
             corners.Clear();
 
-            if (!(contour.Edges.Count == 0))
+            if (contour.Edges.Count != 0)
             {
                 var prevDirection = contour.Edges[^1].GetDirection(1);
 
