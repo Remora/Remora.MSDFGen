@@ -45,9 +45,8 @@ public static partial class MSDF
     {
         var crossThreshold = Math.Sin(angleThreshold);
         var corners = new List<int>();
-        for (var i = 0; i < shape.Contours.Count; i++)
+        foreach (var contour in shape.Contours)
         {
-            var contour = shape.Contours[i];
             corners.Clear();
 
             if (!(contour.Edges.Count == 0))
@@ -71,9 +70,9 @@ public static partial class MSDF
 
             if (corners.Count == 0)
             {
-                for (var j = 0; j < contour.Edges.Count; j++)
+                foreach (var edge in contour.Edges)
                 {
-                    contour.Edges[j].Color = EdgeColor.White;
+                    edge.Color = EdgeColor.White;
                 }
             }
             else if (corners.Count == 1)

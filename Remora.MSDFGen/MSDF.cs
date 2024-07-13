@@ -299,9 +299,8 @@ public static partial class MSDF
             var contour = shape.Contours[i];
             var minDistance = new SignedDistance(-1e240, 1);
 
-            for (var j = 0; j < contour.Edges.Count; j++)
+            foreach (var edge in contour.Edges)
             {
-                var edge = contour.Edges[j];
                 var distance = edge.GetSignedDistance(p, out dummy);
                 if (distance < minDistance)
                 {
@@ -546,9 +545,8 @@ public static partial class MSDF
                 minDistance = new SignedDistance(-1e240, 1)
             };
 
-            for (var j = 0; j < contour.Edges.Count; j++)
+            foreach (var edge in contour.Edges)
             {
-                var edge = contour.Edges[j];
                 double param;
 
                 var distance = edge.GetSignedDistance(p, out param);

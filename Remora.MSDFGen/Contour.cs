@@ -21,9 +21,9 @@ public class Contour
 
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        for (var i = 0; i < Edges.Count; i++)
+        foreach (var edge in Edges)
         {
-            Edges[i].GetBounds(ref left, ref bottom, ref right, ref top);
+            edge.GetBounds(ref left, ref bottom, ref right, ref top);
         }
     }
 
@@ -63,9 +63,9 @@ public class Contour
             else
             {
                 var prev = Edges[^1].GetPoint(0);
-                for (var i = 0; i < Edges.Count; i++)
+                foreach (var edge in Edges)
                 {
-                    var cur = Edges[i].GetPoint(0);
+                    var cur = edge.GetPoint(0);
                     total += Shoelace(prev, cur);
                     prev = cur;
                 }

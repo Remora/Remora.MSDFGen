@@ -22,15 +22,13 @@ public class Shape
 
     public bool Validate()
     {
-        for (var i = 0; i < Contours.Count; i++)
+        foreach (var contour in Contours)
         {
-            var contour = Contours[i];
             if (contour.Edges.Count > 0)
             {
                 var corner = contour.Edges[^1].GetPoint(1);
-                for (var j = 0; j < contour.Edges.Count; j++)
+                foreach (var edge in contour.Edges)
                 {
-                    var edge = contour.Edges[j];
                     if (edge == null)
                     {
                         return false;
@@ -51,9 +49,8 @@ public class Shape
 
     public void Normalize()
     {
-        for (var i = 0; i < Contours.Count; i++)
+        foreach (var contour in Contours)
         {
-            var contour = Contours[i];
             if (contour.Edges.Count == 1)
             {
                 EdgeSegment e1, e2, e3;
@@ -68,9 +65,9 @@ public class Shape
 
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        for (var i = 0; i < Contours.Count; i++)
+        foreach (var contour in Contours)
         {
-            Contours[i].GetBounds(ref left, ref bottom, ref right, ref top);
+            contour.GetBounds(ref left, ref bottom, ref right, ref top);
         }
     }
 }
