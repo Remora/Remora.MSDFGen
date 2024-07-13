@@ -10,4 +10,16 @@
         </PackageReleaseNotes>
         <PackageTags>$(PackageTags);font;fonts;rendering;msdfgen;msdf</PackageTags>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Update="LinearSegment.cs">
+        <DependentUpon>EdgeSegment.cs</DependentUpon>
+      </Compile>
+      <Compile Update="CubicSegment.cs">
+        <DependentUpon>EdgeSegment.cs</DependentUpon>
+      </Compile>
+      <Compile Update="QuadraticSegment.cs">
+        <DependentUpon>EdgeSegment.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
