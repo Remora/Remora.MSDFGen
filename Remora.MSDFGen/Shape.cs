@@ -53,8 +53,7 @@ public class Shape
         {
             if (contour.Edges.Count == 1)
             {
-                EdgeSegment e1, e2, e3;
-                contour.Edges[0].SplitInThirds(out e1, out e2, out e3);
+                contour.Edges[0].SplitInThirds(out var e1, out var e2, out var e3);
                 contour.Edges.Clear();
                 contour.Edges.Add(e1);
                 contour.Edges.Add(e2);

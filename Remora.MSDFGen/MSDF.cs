@@ -547,9 +547,7 @@ public static partial class MSDF
 
             foreach (var edge in contour.Edges)
             {
-                double param;
-
-                var distance = edge.GetSignedDistance(p, out param);
+                var distance = edge.GetSignedDistance(p, out var param);
                 if ((edge.Color & EdgeColor.Red) == EdgeColor.Red && distance < r.minDistance)
                 {
                     r.minDistance = distance;
