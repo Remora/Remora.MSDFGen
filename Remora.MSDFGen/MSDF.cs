@@ -289,7 +289,7 @@ public static partial class MSDF
         var contourCount = contourSD.Length;
 
         double dummy;
-        var p = new Vector2(x + 0.5f, y + 0.5f) / scale - translate;
+        var p = (new Vector2(x + 0.5f, y + 0.5f) / scale) - translate;
         var negDist = -SignedDistance.Infinite.distance;
         var posDist = SignedDistance.Infinite.distance;
         var winding = 0;

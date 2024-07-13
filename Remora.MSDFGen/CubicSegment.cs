@@ -114,7 +114,7 @@ public class CubicSegment : EdgeSegment
                 }
 
                 var d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
-                var d2 = 6 * _as * (float)t + 6 * br;
+                var d2 = (6 * _as * (float)t) + (6 * br);
                 _t -= Vector2.Dot(qpt, d1) / (Vector2.Dot(d1, d1) + Vector2.Dot(qpt, d2));
                 if (t < 0 || t > 1)
                 {
@@ -153,7 +153,7 @@ public class CubicSegment : EdgeSegment
 
         var a0 = p1 - p0;
         var a1 = 2 * (p2 - p1 - a0);
-        var a2 = p3 - 3 * p2 + 3 * p1 - p0;
+        var a2 = p3 - (3 * p2) + (3 * p1) - p0;
 
         var roots = new Roots();
         var solutions = SolveQuadratic(ref roots, a2.X, a1.X, a0.X);

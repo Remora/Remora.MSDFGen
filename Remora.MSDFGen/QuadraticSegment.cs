@@ -52,7 +52,7 @@ public class QuadraticSegment : EdgeSegment
         var br = p0 + p2 - p1 - p1;
         double a = Vector2.Dot(br, br);
         double b = 3 * Vector2.Dot(ab, br);
-        double c = 2 * Vector2.Dot(ab, ab) + Vector2.Dot(qa, br);
+        double c = (2 * Vector2.Dot(ab, ab)) + Vector2.Dot(qa, br);
         double d = Vector2.Dot(qa, ab);
 
         var roots = new Roots();

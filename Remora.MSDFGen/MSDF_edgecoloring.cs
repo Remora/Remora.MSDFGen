@@ -37,7 +37,7 @@ public static partial class MSDF
         }
 
         var shifted = (int)color << (int)(1 + (seed & 1));
-        color = (EdgeColor)((shifted | shifted >> 3) & (int)EdgeColor.White);
+        color = (EdgeColor)((shifted | (shifted >> 3)) & (int)EdgeColor.White);
         seed >>= 1;
     }
 
@@ -88,7 +88,7 @@ public static partial class MSDF
                     var m = contour.Edges.Count;
                     for (var j = 0; j < m; j++)
                     {
-                        var magic = (int)(3 + 2.875f * j / (m - 1) - 1.4375f + 0.5f) -
+                        var magic = (int)(3 + (2.875f * j / (m - 1)) - 1.4375f + 0.5f) -
                                     3; //see edge-coloring.cpp in the original msdfgen
                         contour.Edges[(corner + j) % m].Color = colors[1 + magic];
                     }
@@ -97,15 +97,15 @@ public static partial class MSDF
                 {
                     EdgeSegment[] parts = new EdgeSegment[7];
                     contour.Edges[0].SplitInThirds(
-                        out parts[0 + 3 * corner],
-                        out parts[1 + 3 * corner],
-                        out parts[2 + 3 * corner]);
+                        out parts[0 + (3 * corner)],
+                        out parts[1 + (3 * corner)],
+                        out parts[2 + (3 * corner)]);
                     if (contour.Edges.Count >= 2)
                     {
                         contour.Edges[1].SplitInThirds(
-                            out parts[3 - 3 * corner],
-                            out parts[4 - 3 * corner],
-                            out parts[5 - 3 * corner]);
+                            out parts[3 - (3 * corner)],
+                            out parts[4 - (3 * corner)],
+                            out parts[5 - (3 * corner)]);
                         parts[0].Color = colors[0];
                         parts[1].Color = colors[0];
                         parts[2].Color = colors[1];

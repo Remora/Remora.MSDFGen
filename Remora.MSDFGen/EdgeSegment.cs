@@ -119,7 +119,7 @@ public abstract class EdgeSegment
 
     public static double Cross(Vector2 a, Vector2 b)
     {
-        return a.X * b.Y - a.Y * b.X;
+        return (a.X * b.Y) - (a.Y * b.X);
     }
 
     protected int NonZeroSign(double d)
@@ -172,7 +172,7 @@ public abstract class EdgeSegment
             return 1;
         }
 
-        var discriminant = b * b - 4 * a * c;
+        var discriminant = (b * b) - (4 * a * c);
 
         if (discriminant > 0)
         {
@@ -195,8 +195,8 @@ public abstract class EdgeSegment
     protected int SolveCubicNormed(ref Roots roots, double a, double b, double c)
     {
         var aSquared = a * a;
-        var q = (aSquared - 3 * b) / 9;
-        var r = (a * (2 * aSquared - 9 * b) + 27 * c) / 54;
+        var q = (aSquared - (3 * b)) / 9;
+        var r = ((a * ((2 * aSquared) - (9 * b))) + (27 * c)) / 54;
         var rSquared = r * r;
         var qCubed = q * q * q;
 
@@ -217,9 +217,9 @@ public abstract class EdgeSegment
             a /= 3;
             q = -2 * Math.Sqrt(q);
 
-            roots.x0 = q * Math.Cos(t / 3) - a;
-            roots.x1 = q * Math.Cos((t + 2 * Math.PI) / 3) - a;
-            roots.x2 = q * Math.Cos((t - 2 * Math.PI) / 3) - a;
+            roots.x0 = (q * Math.Cos(t / 3)) - a;
+            roots.x1 = (q * Math.Cos((t + (2 * Math.PI)) / 3)) - a;
+            roots.x2 = (q * Math.Cos((t - (2 * Math.PI)) / 3)) - a;
 
             return 3;
         }
@@ -238,7 +238,7 @@ public abstract class EdgeSegment
             a /= 3;
 
             roots.x0 = (A + B) - a;
-            roots.x1 = -0.5 * (A + B) - a;
+            roots.x1 = (-0.5 * (A + B)) - a;
             roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
 
             if (Math.Abs(roots.x2) < 1e-14)
