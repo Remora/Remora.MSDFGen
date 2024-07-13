@@ -102,7 +102,7 @@ public static partial class MSDF
                         }
                         case >= 1:
                         {
-                            EdgeSegment[] parts = new EdgeSegment[7];
+                            var parts = new EdgeSegment[7];
                             contour.Edges[0].SplitInThirds(
                                 out parts[0 + (3 * corner)],
                                 out parts[1 + (3 * corner)],
