@@ -594,20 +594,9 @@ public static partial class MSDF
                 winding = -windings[i];
             }
 
-            if (r.nearEdge != null)
-            {
-                r.nearEdge.DistanceToPseudoDistance(ref r.minDistance, p, r.nearParam);
-            }
-
-            if (g.nearEdge != null)
-            {
-                g.nearEdge.DistanceToPseudoDistance(ref g.minDistance, p, g.nearParam);
-            }
-
-            if (b.nearEdge != null)
-            {
-                b.nearEdge.DistanceToPseudoDistance(ref b.minDistance, p, b.nearParam);
-            }
+            r.nearEdge?.DistanceToPseudoDistance(ref r.minDistance, p, r.nearParam);
+            g.nearEdge?.DistanceToPseudoDistance(ref g.minDistance, p, g.nearParam);
+            b.nearEdge?.DistanceToPseudoDistance(ref b.minDistance, p, b.nearParam);
 
             medMinDistance = Median(r.minDistance.distance, g.minDistance.distance, b.minDistance.distance);
 
@@ -627,20 +616,9 @@ public static partial class MSDF
             }
         }
 
-        if (sr.nearEdge != null)
-        {
-            sr.nearEdge.DistanceToPseudoDistance(ref sr.minDistance, p, sr.nearParam);
-        }
-
-        if (sg.nearEdge != null)
-        {
-            sg.nearEdge.DistanceToPseudoDistance(ref sg.minDistance, p, sg.nearParam);
-        }
-
-        if (sb.nearEdge != null)
-        {
-            sb.nearEdge.DistanceToPseudoDistance(ref sb.minDistance, p, sb.nearParam);
-        }
+        sr.nearEdge?.DistanceToPseudoDistance(ref sr.minDistance, p, sr.nearParam);
+        sg.nearEdge?.DistanceToPseudoDistance(ref sg.minDistance, p, sg.nearParam);
+        sb.nearEdge?.DistanceToPseudoDistance(ref sb.minDistance, p, sb.nearParam);
 
         var msd = new MultiDistance
         {
