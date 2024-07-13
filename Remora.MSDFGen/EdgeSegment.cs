@@ -139,19 +139,13 @@ public abstract class EdgeSegment
         public double x1;
         public double x2;
 
-        public double this[int i]
+        public double this[int i] => i switch
         {
-            get
-            {
-                switch (i)
-                {
-                    case 0: return x0;
-                    case 1: return x1;
-                    case 2: return x2;
-                    default: throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
+            0 => x0,
+            1 => x1,
+            2 => x2,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 
     protected int SolveQuadratic(ref Roots roots, double a, double b, double c)
