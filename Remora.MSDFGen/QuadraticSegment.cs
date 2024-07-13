@@ -85,26 +85,20 @@ public class QuadraticSegment : EdgeSegment
             }
         }
 
-        if (t is >= 0 and <= 1)
+        return t switch
         {
-            return new SignedDistance(minDistance, 0);
-        }
-
-        if (t < .5)
-        {
-            return new SignedDistance(minDistance, Math.Abs(Vector2.Dot(Vector2.Normalize(ab), Vector2.Normalize(qa))));
-        }
-        else
-        {
-            return new SignedDistance(
+            >= 0 and <= 1 => new SignedDistance(minDistance, 0),
+            < .5 => new SignedDistance
+            (
                 minDistance,
-                Math.Abs(
-                    Vector2.Dot(
-                        Vector2.Normalize(p2 - p1),
-                        Vector2.Normalize(p2 - origin)
-                    ))
-            );
-        }
+                Math.Abs(Vector2.Dot(Vector2.Normalize(ab), Vector2.Normalize(qa)))
+            ),
+            _ => new SignedDistance
+            (
+                minDistance,
+                Math.Abs(Vector2.Dot(Vector2.Normalize(p2 - p1), Vector2.Normalize(p2 - origin)))
+            )
+        };
     }
 
     public override void GetBounds(ref double left, ref double bottom, ref double right, ref double top)

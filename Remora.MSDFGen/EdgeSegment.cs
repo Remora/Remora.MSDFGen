@@ -48,36 +48,43 @@ public abstract class EdgeSegment
 
     public void DistanceToPseudoDistance(ref SignedDistance distance, Vector2 origin, double t)
     {
-        if (t < 0)
+        switch (t)
         {
-            var dir = Vector2.Normalize(GetDirection(0));
-            var aq = origin - GetPoint(0);
-            double ts = Vector2.Dot(aq, dir);
-
-            if (ts < 0)
+            case < 0:
             {
-                var pseudoDistance = Cross(aq, dir);
-                if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                var dir = Vector2.Normalize(GetDirection(0));
+                var aq = origin - GetPoint(0);
+                double ts = Vector2.Dot(aq, dir);
+
+                if (ts < 0)
                 {
-                    distance.distance = pseudoDistance;
-                    distance.dot = 0;
+                    var pseudoDistance = Cross(aq, dir);
+                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                    {
+                        distance.distance = pseudoDistance;
+                        distance.dot = 0;
+                    }
                 }
+
+                break;
             }
-        }
-        else if (t > 1)
-        {
-            var dir = Vector2.Normalize(GetDirection(1));
-            var bq = origin - GetPoint(1);
-            double ts = Vector2.Dot(bq, dir);
-
-            if (ts > 0)
+            case > 1:
             {
-                var pseudoDistance = Cross(bq, dir);
-                if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                var dir = Vector2.Normalize(GetDirection(1));
+                var bq = origin - GetPoint(1);
+                double ts = Vector2.Dot(bq, dir);
+
+                if (ts > 0)
                 {
-                    distance.distance = pseudoDistance;
-                    distance.dot = 0;
+                    var pseudoDistance = Cross(bq, dir);
+                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                    {
+                        distance.distance = pseudoDistance;
+                        distance.dot = 0;
+                    }
                 }
+
+                break;
             }
         }
     }
@@ -168,21 +175,24 @@ public abstract class EdgeSegment
 
         var discriminant = (b * b) - (4 * a * c);
 
-        if (discriminant > 0)
+        switch (discriminant)
         {
-            discriminant = Math.Sqrt(discriminant);
-            roots.x0 = (-b + discriminant) / (2 * a);
-            roots.x1 = (-b - discriminant) / (2 * a);
-            return 2;
-        }
-        else if (discriminant == 0)
-        {
-            roots.x0 = -b / (2 * a);
-            return 1;
-        }
-        else
-        {
-            return 0;
+            case > 0:
+            {
+                discriminant = Math.Sqrt(discriminant);
+                roots.x0 = (-b + discriminant) / (2 * a);
+                roots.x1 = (-b - discriminant) / (2 * a);
+                return 2;
+            }
+            case 0:
+            {
+                roots.x0 = -b / (2 * a);
+                return 1;
+            }
+            default:
+            {
+                return 0;
+            }
         }
     }
 

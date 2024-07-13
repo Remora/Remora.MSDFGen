@@ -57,14 +57,16 @@ public class CubicSegment : EdgeSegment
 
         if (tangent == Vector2.Zero)
         {
-            if (t == 0)
+            switch (t)
             {
-                return p2 - p0;
-            }
-
-            if (t == 1)
-            {
-                return p3 - p1;
+                case 0:
+                {
+                    return p2 - p0;
+                }
+                case 1:
+                {
+                    return p3 - p1;
+                }
             }
         }
 
@@ -125,25 +127,20 @@ public class CubicSegment : EdgeSegment
             }
         }
 
-        if (t is >= 0 and <= 1)
+        return t switch
         {
-            return new SignedDistance(minDistance, 0);
-        }
-
-        if (t < 0.5)
-        {
-            return new SignedDistance(
+            >= 0 and <= 1 => new SignedDistance(minDistance, 0),
+            < 0.5 => new SignedDistance
+            (
                 minDistance,
                 Math.Abs(Vector2.Dot(Vector2.Normalize(GetDirection(0)), Vector2.Normalize(qa)))
-            );
-        }
-        else
-        {
-            return new SignedDistance(
+            ),
+            _ => new SignedDistance
+            (
                 minDistance,
                 Math.Abs(Vector2.Dot(Vector2.Normalize(GetDirection(1)), Vector2.Normalize(p3 - origin)))
-            );
-        }
+            )
+        };
     }
 
     public override void GetBounds(ref double left, ref double bottom, ref double right, ref double top)

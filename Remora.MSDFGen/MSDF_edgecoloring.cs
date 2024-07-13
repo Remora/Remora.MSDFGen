@@ -68,87 +68,102 @@ public static partial class MSDF
                 }
             }
 
-            if (corners.Count == 0)
+            switch (corners.Count)
             {
-                foreach (var edge in contour.Edges)
+                case 0:
                 {
-                    edge.Color = EdgeColor.White;
+                    foreach (var edge in contour.Edges)
+                    {
+                        edge.Color = EdgeColor.White;
+                    }
+
+                    break;
                 }
-            }
-            else if (corners.Count == 1)
-            {
-                EdgeColor[] colors = { EdgeColor.White, EdgeColor.White, EdgeColor.Black };
-                SwitchColor(ref colors[0], ref seed, EdgeColor.Black);
-                SwitchColor(ref colors[2], ref seed, EdgeColor.Black);
-
-                var corner = corners[0];
-
-                if (contour.Edges.Count >= 3)
+                case 1:
                 {
+                    EdgeColor[] colors = { EdgeColor.White, EdgeColor.White, EdgeColor.Black };
+                    SwitchColor(ref colors[0], ref seed, EdgeColor.Black);
+                    SwitchColor(ref colors[2], ref seed, EdgeColor.Black);
+
+                    var corner = corners[0];
+
+                    switch (contour.Edges.Count)
+                    {
+                        case >= 3:
+                        {
+                            var m = contour.Edges.Count;
+                            for (var j = 0; j < m; j++)
+                            {
+                                var magic = (int)(3 + (2.875f * j / (m - 1)) - 1.4375f + 0.5f) - 3; //see edge-coloring.cpp in the original msdfgen
+                                contour.Edges[(corner + j) % m].Color = colors[1 + magic];
+                            }
+
+                            break;
+                        }
+                        case >= 1:
+                        {
+                            EdgeSegment[] parts = new EdgeSegment[7];
+                            contour.Edges[0].SplitInThirds(
+                                out parts[0 + (3 * corner)],
+                                out parts[1 + (3 * corner)],
+                                out parts[2 + (3 * corner)]);
+                            if (contour.Edges.Count >= 2)
+                            {
+                                contour.Edges[1].SplitInThirds(
+                                    out parts[3 - (3 * corner)],
+                                    out parts[4 - (3 * corner)],
+                                    out parts[5 - (3 * corner)]);
+                                parts[0].Color = colors[0];
+                                parts[1].Color = colors[0];
+                                parts[2].Color = colors[1];
+                                parts[3].Color = colors[1];
+                                parts[4].Color = colors[2];
+                                parts[5].Color = colors[2];
+                            }
+                            else
+                            {
+                                parts[0].Color = colors[0];
+                                parts[1].Color = colors[1];
+                                parts[2].Color = colors[2];
+                            }
+
+                            contour.Edges.Clear();
+                            for (var j = 0; parts[j] != null; j++)
+                            {
+                                contour.Edges.Add(parts[j]);
+                            }
+
+                            break;
+                        }
+                    }
+
+                    break;
+                }
+                default:
+                {
+                    var cornerCount = corners.Count;
+                    var spline = 0;
+                    var start = corners[0];
                     var m = contour.Edges.Count;
+                    var color = EdgeColor.White;
+                    SwitchColor(ref color, ref seed, EdgeColor.Black);
+                    var initialColor = color;
                     for (var j = 0; j < m; j++)
                     {
-                        var magic = (int)(3 + (2.875f * j / (m - 1)) - 1.4375f + 0.5f) -
-                                    3; //see edge-coloring.cpp in the original msdfgen
-                        contour.Edges[(corner + j) % m].Color = colors[1 + magic];
-                    }
-                }
-                else if (contour.Edges.Count >= 1)
-                {
-                    EdgeSegment[] parts = new EdgeSegment[7];
-                    contour.Edges[0].SplitInThirds(
-                        out parts[0 + (3 * corner)],
-                        out parts[1 + (3 * corner)],
-                        out parts[2 + (3 * corner)]);
-                    if (contour.Edges.Count >= 2)
-                    {
-                        contour.Edges[1].SplitInThirds(
-                            out parts[3 - (3 * corner)],
-                            out parts[4 - (3 * corner)],
-                            out parts[5 - (3 * corner)]);
-                        parts[0].Color = colors[0];
-                        parts[1].Color = colors[0];
-                        parts[2].Color = colors[1];
-                        parts[3].Color = colors[1];
-                        parts[4].Color = colors[2];
-                        parts[5].Color = colors[2];
-                    }
-                    else
-                    {
-                        parts[0].Color = colors[0];
-                        parts[1].Color = colors[1];
-                        parts[2].Color = colors[2];
+                        var index = (start + j) % m;
+                        if (spline + 1 < cornerCount && corners[spline + 1] == index)
+                        {
+                            spline++;
+                            SwitchColor(
+                                ref color,
+                                ref seed,
+                                (EdgeColor)(((spline == cornerCount - 1) ? 1 : 0) * (int)initialColor));
+                        }
+
+                        contour.Edges[index].Color = color;
                     }
 
-                    contour.Edges.Clear();
-                    for (var j = 0; parts[j] != null; j++)
-                    {
-                        contour.Edges.Add(parts[j]);
-                    }
-                }
-            }
-            else
-            {
-                var cornerCount = corners.Count;
-                var spline = 0;
-                var start = corners[0];
-                var m = contour.Edges.Count;
-                var color = EdgeColor.White;
-                SwitchColor(ref color, ref seed, EdgeColor.Black);
-                var initialColor = color;
-                for (var j = 0; j < m; j++)
-                {
-                    var index = (start + j) % m;
-                    if (spline + 1 < cornerCount && corners[spline + 1] == index)
-                    {
-                        spline++;
-                        SwitchColor(
-                            ref color,
-                            ref seed,
-                            (EdgeColor)(((spline == cornerCount - 1) ? 1 : 0) * (int)initialColor));
-                    }
-
-                    contour.Edges[index].Color = color;
+                    break;
                 }
             }
         }

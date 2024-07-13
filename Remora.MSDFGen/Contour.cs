@@ -38,36 +38,43 @@ public class Contour
 
             double total = 0;
 
-            if (Edges.Count == 1)
+            switch (Edges.Count)
             {
-                var a = Edges[0].GetPoint(0);
-                var b = Edges[0].GetPoint(1 / 3f);
-                var c = Edges[0].GetPoint(2 / 3f);
-
-                total += Shoelace(a, b);
-                total += Shoelace(b, c);
-                total += Shoelace(c, a);
-            }
-            else if (Edges.Count == 2)
-            {
-                var a = Edges[0].GetPoint(0);
-                var b = Edges[0].GetPoint(0.5f);
-                var c = Edges[1].GetPoint(0);
-                var d = Edges[1].GetPoint(0.5f);
-
-                total += Shoelace(a, b);
-                total += Shoelace(b, c);
-                total += Shoelace(c, d);
-                total += Shoelace(d, a);
-            }
-            else
-            {
-                var prev = Edges[^1].GetPoint(0);
-                foreach (var edge in Edges)
+                case 1:
                 {
-                    var cur = edge.GetPoint(0);
-                    total += Shoelace(prev, cur);
-                    prev = cur;
+                    var a = Edges[0].GetPoint(0);
+                    var b = Edges[0].GetPoint(1 / 3f);
+                    var c = Edges[0].GetPoint(2 / 3f);
+
+                    total += Shoelace(a, b);
+                    total += Shoelace(b, c);
+                    total += Shoelace(c, a);
+                    break;
+                }
+                case 2:
+                {
+                    var a = Edges[0].GetPoint(0);
+                    var b = Edges[0].GetPoint(0.5f);
+                    var c = Edges[1].GetPoint(0);
+                    var d = Edges[1].GetPoint(0.5f);
+
+                    total += Shoelace(a, b);
+                    total += Shoelace(b, c);
+                    total += Shoelace(c, d);
+                    total += Shoelace(d, a);
+                    break;
+                }
+                default:
+                {
+                    var prev = Edges[^1].GetPoint(0);
+                    foreach (var edge in Edges)
+                    {
+                        var cur = edge.GetPoint(0);
+                        total += Shoelace(prev, cur);
+                        prev = cur;
+                    }
+
+                    break;
                 }
             }
 
