@@ -11,7 +11,7 @@ using System.Numerics;
 namespace Remora.MSDFGen;
 
 /// <summary>
-/// Represents the countour of a single glyph.
+/// Represents a contour in a glyph.
 /// </summary>
 public class Contour
 {
@@ -19,21 +19,6 @@ public class Contour
     /// Gets the segments take makes up the contour.
     /// </summary>
     public List<EdgeSegment> Edges { get; } = new();
-
-    /// <summary>
-    /// Calculates the bounding box of the contour.
-    /// </summary>
-    /// <param name="left">The left limit of the contour.</param>
-    /// <param name="bottom">The bottom limit of the contour.</param>
-    /// <param name="right">The right limit of the contour.</param>
-    /// <param name="top">The top limit of the contour.</param>
-    public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
-    {
-        foreach (var edge in Edges)
-        {
-            edge.GetBounds(ref left, ref bottom, ref right, ref top);
-        }
-    }
 
     /// <summary>
     /// Gets the winding direction of the contour.
@@ -90,6 +75,21 @@ public class Contour
             }
 
             return Math.Sign(total);
+        }
+    }
+
+    /// <summary>
+    /// Calculates the bounding box of the contour.
+    /// </summary>
+    /// <param name="left">The left limit of the contour.</param>
+    /// <param name="bottom">The bottom limit of the contour.</param>
+    /// <param name="right">The right limit of the contour.</param>
+    /// <param name="top">The top limit of the contour.</param>
+    public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
+    {
+        foreach (var edge in Edges)
+        {
+            edge.GetBounds(ref left, ref bottom, ref right, ref top);
         }
     }
 
