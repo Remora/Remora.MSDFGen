@@ -291,8 +291,8 @@ public static class MSDF
         var contourCount = contourSD.Length;
 
         var p = (new Vector2(x + 0.5f, y + 0.5f) / scale) - translate;
-        var negDist = -SignedDistance.Infinite.distance;
-        var posDist = SignedDistance.Infinite.distance;
+        var negDist = -SignedDistance.Infinite.Distance;
+        var posDist = SignedDistance.Infinite.Distance;
         var winding = 0;
 
         for (var i = 0; i < contourCount; i++)
@@ -309,19 +309,19 @@ public static class MSDF
                 }
             }
 
-            contourSD[i] = minDistance.distance;
-            if (windings[i] > 0 && minDistance.distance >= 0 && Math.Abs(minDistance.distance) < Math.Abs(posDist))
+            contourSD[i] = minDistance.Distance;
+            if (windings[i] > 0 && minDistance.Distance >= 0 && Math.Abs(minDistance.Distance) < Math.Abs(posDist))
             {
-                posDist = minDistance.distance;
+                posDist = minDistance.Distance;
             }
 
-            if (windings[i] < 0 && minDistance.distance <= 0 && Math.Abs(minDistance.distance) < Math.Abs(negDist))
+            if (windings[i] < 0 && minDistance.Distance <= 0 && Math.Abs(minDistance.Distance) < Math.Abs(negDist))
             {
-                negDist = minDistance.distance;
+                negDist = minDistance.Distance;
             }
         }
 
-        var sd = SignedDistance.Infinite.distance;
+        var sd = SignedDistance.Infinite.Distance;
 
         if (posDist >= 0 && Math.Abs(posDist) <= Math.Abs(negDist))
         {
@@ -525,9 +525,9 @@ public static class MSDF
             minDistance = new SignedDistance(-1e240, 1)
         };
 
-        var d = Math.Abs(SignedDistance.Infinite.distance);
-        var negDist = -SignedDistance.Infinite.distance;
-        var posDist = SignedDistance.Infinite.distance;
+        var d = Math.Abs(SignedDistance.Infinite.Distance);
+        var negDist = -SignedDistance.Infinite.Distance;
+        var posDist = SignedDistance.Infinite.Distance;
         var winding = 0;
 
         for (var i = 0; i < contourCount; i++)
@@ -589,7 +589,7 @@ public static class MSDF
             }
 
             var medMinDistance =
-                Math.Abs(Median(r.minDistance.distance, g.minDistance.distance, b.minDistance.distance));
+                Math.Abs(Median(r.minDistance.Distance, g.minDistance.Distance, b.minDistance.Distance));
 
             if (medMinDistance < d)
             {
@@ -601,11 +601,11 @@ public static class MSDF
             g.nearEdge?.DistanceToPseudoDistance(ref g.minDistance, p, g.nearParam);
             b.nearEdge?.DistanceToPseudoDistance(ref b.minDistance, p, b.nearParam);
 
-            medMinDistance = Median(r.minDistance.distance, g.minDistance.distance, b.minDistance.distance);
+            medMinDistance = Median(r.minDistance.Distance, g.minDistance.Distance, b.minDistance.Distance);
 
-            contourSD[i].r = r.minDistance.distance;
-            contourSD[i].g = g.minDistance.distance;
-            contourSD[i].b = b.minDistance.distance;
+            contourSD[i].r = r.minDistance.Distance;
+            contourSD[i].g = g.minDistance.Distance;
+            contourSD[i].b = b.minDistance.Distance;
             contourSD[i].med = medMinDistance;
 
             if (windings[i] > 0 && medMinDistance >= 0 && Math.Abs(medMinDistance) < Math.Abs(posDist))
@@ -625,15 +625,15 @@ public static class MSDF
 
         var msd = new MultiDistance
         {
-            r = SignedDistance.Infinite.distance,
-            g = SignedDistance.Infinite.distance,
-            b = SignedDistance.Infinite.distance,
-            med = SignedDistance.Infinite.distance
+            r = SignedDistance.Infinite.Distance,
+            g = SignedDistance.Infinite.Distance,
+            b = SignedDistance.Infinite.Distance,
+            med = SignedDistance.Infinite.Distance
         };
 
         if (posDist >= 0 && Math.Abs(posDist) <= Math.Abs(negDist))
         {
-            msd.med = SignedDistance.Infinite.distance;
+            msd.med = SignedDistance.Infinite.Distance;
             winding = 1;
             for (var i = 0; i < contourCount; i++)
             {
@@ -645,7 +645,7 @@ public static class MSDF
         }
         else if (negDist <= 0 && Math.Abs(negDist) <= Math.Abs(posDist))
         {
-            msd.med = -SignedDistance.Infinite.distance;
+            msd.med = -SignedDistance.Infinite.Distance;
             winding = -1;
             for (var i = 0; i < contourCount; i++)
             {
@@ -664,7 +664,7 @@ public static class MSDF
             }
         }
 
-        if (Median(sr.minDistance.distance, sg.minDistance.distance, sb.minDistance.distance) != msd.med)
+        if (Median(sr.minDistance.Distance, sg.minDistance.Distance, sb.minDistance.Distance) != msd.med)
         {
             return new Color3(
                 (float)(msd.r / range) + 0.5f,
@@ -672,9 +672,9 @@ public static class MSDF
                 (float)(msd.b / range) + 0.5f);
         }
 
-        msd.r = sr.minDistance.distance;
-        msd.g = sg.minDistance.distance;
-        msd.b = sb.minDistance.distance;
+        msd.r = sr.minDistance.Distance;
+        msd.g = sg.minDistance.Distance;
+        msd.b = sb.minDistance.Distance;
 
         return new Color3((float)(msd.r / range) + 0.5f, (float)(msd.g / range) + 0.5f, (float)(msd.b / range) + 0.5f);
     }

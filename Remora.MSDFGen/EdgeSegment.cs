@@ -47,10 +47,10 @@ public abstract class EdgeSegment
                 if (ts < 0)
                 {
                     var pseudoDistance = Cross(aq, dir);
-                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.Distance))
                     {
-                        distance.distance = pseudoDistance;
-                        distance.dot = 0;
+                        distance.Distance = pseudoDistance;
+                        distance.Dot = 0;
                     }
                 }
 
@@ -65,10 +65,10 @@ public abstract class EdgeSegment
                 if (ts > 0)
                 {
                     var pseudoDistance = Cross(bq, dir);
-                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.distance))
+                    if (Math.Abs(pseudoDistance) <= Math.Abs(distance.Distance))
                     {
-                        distance.distance = pseudoDistance;
-                        distance.dot = 0;
+                        distance.Distance = pseudoDistance;
+                        distance.Dot = 0;
                     }
                 }
 
