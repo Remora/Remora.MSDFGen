@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Remora.MSDFGen.Extensions;
 using Remora.MSDFGen.Graphics;
 
@@ -45,16 +44,14 @@ public static class MSDF
         {
             aa = a.R;
             ba = b.R;
-            if (a.G > .5f != b.G > .5f &&
-                a.G < .5f != b.G < .5f)
+            if (a.G > .5f != b.G > .5f && a.G < .5f != b.G < .5f)
             {
                 ab = a.G;
                 bb = b.G;
                 ac = a.B;
                 bc = b.B;
             }
-            else if (a.B > .5f != b.B > .5f &&
-                     a.B < .5f != b.B < .5f)
+            else if (a.B > .5f != b.B > .5f && a.B < .5f != b.B < .5f)
             {
                 ab = a.B;
                 bb = b.B;
@@ -690,10 +687,12 @@ public static class MSDF
 
         if (Median(sr.minDistance.Distance, sg.minDistance.Distance, sb.minDistance.Distance) != msd.Median)
         {
-            return new Color3(
+            return new Color3
+            (
                 (float)(msd.R / range) + 0.5f,
                 (float)(msd.G / range) + 0.5f,
-                (float)(msd.B / range) + 0.5f);
+                (float)(msd.B / range) + 0.5f
+            );
         }
 
         msd.R = sr.minDistance.Distance;
@@ -703,7 +702,7 @@ public static class MSDF
         return new Color3((float)(msd.R / range) + 0.5f, (float)(msd.G / range) + 0.5f, (float)(msd.B / range) + 0.5f);
     }
 
-    private static EdgeColor[] switchColors = { EdgeColor.Cyan, EdgeColor.Magenta, EdgeColor.Yellow };
+    private static readonly EdgeColor[] _switchColors = [EdgeColor.Cyan, EdgeColor.Magenta, EdgeColor.Yellow];
 
     private static void SwitchColor(ref EdgeColor color, ref ulong seed, EdgeColor banned)
     {
@@ -717,7 +716,7 @@ public static class MSDF
 
         if (color is EdgeColor.Black or EdgeColor.White)
         {
-            color = switchColors[seed % 3];
+            color = _switchColors[seed % 3];
             seed /= 3;
             return;
         }
@@ -742,10 +741,15 @@ public static class MSDF
                 for (var j = 0; j < contour.Edges.Count; j++)
                 {
                     var edge = contour.Edges[j];
-                    if (IsCorner(
+                    if
+                    (
+                        IsCorner
+                        (
                             Vector2.Normalize(prevDirection),
                             Vector2.Normalize(edge.GetDirection(0)),
-                            crossThreshold))
+                            crossThreshold
+                        )
+                    )
                     {
                         corners.Add(j);
                     }
@@ -840,10 +844,12 @@ public static class MSDF
                         if (spline + 1 < cornerCount && corners[spline + 1] == index)
                         {
                             spline++;
-                            SwitchColor(
+                            SwitchColor
+                            (
                                 ref color,
                                 ref seed,
-                                (EdgeColor)((spline == cornerCount - 1 ? 1 : 0) * (int)initialColor));
+                                (EdgeColor)((spline == cornerCount - 1 ? 1 : 0) * (int)initialColor)
+                            );
                         }
 
                         contour.Edges[index].Color = color;
@@ -857,6 +863,6 @@ public static class MSDF
 
     private static bool IsCorner(Vector2 aDir, Vector2 bDir, double crossThreshold)
     {
-        return Vector2.Dot(aDir, bDir) <= 0 || Math.Abs(EdgeSegment.Cross(aDir, bDir)) > crossThreshold;
+        return Vector2.Dot(aDir, bDir) <= 0 || Math.Abs(aDir.Cross(bDir)) > crossThreshold;
     }
 }
