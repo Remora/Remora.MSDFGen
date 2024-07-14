@@ -10,64 +10,80 @@ using Remora.MSDFGen.Extensions;
 
 namespace Remora.MSDFGen;
 
+/// <summary>
+/// Represents a quadratic spline segment, containing a start and end point with one intermediate continuous derivative.
+/// </summary>
 public class QuadraticSegment : SplineSegment
 {
-    private Vector2 p0;
-    private Vector2 p1;
-    private Vector2 p2;
+    private Vector2 _start;
+    private Vector2 _p1;
+    private Vector2 _end;
 
-    public QuadraticSegment(Vector2 p0, Vector2 p1, Vector2 p2, EdgeColor color)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QuadraticSegment"/> class.
+    /// </summary>
+    /// <param name="start">The start point.</param>
+    /// <param name="p1">The intermediate derivative.</param>
+    /// <param name="end">The end point.</param>
+    /// <param name="color">The color of the segment.</param>
+    public QuadraticSegment(Vector2 start, Vector2 p1, Vector2 end, EdgeColor color)
         : base(color)
     {
-        this.p0 = p0;
-        this.p1 = p1;
-        this.p2 = p2;
+        _start = start;
+        _p1 = p1;
+        _end = end;
     }
 
+    /// <inheritdoc />
     public override EdgeSegment Clone()
     {
-        return new QuadraticSegment(p0, p1, p2, this.Color);
+        return new QuadraticSegment(_start, _p1, _end, this.Color);
     }
 
+    /// <inheritdoc />
     public override Vector2 GetPoint(double normalizedEdgeDistance)
     {
-        return Vector2.Lerp(
-            Vector2.Lerp(p0, p1, (float)normalizedEdgeDistance),
-            Vector2.Lerp(p1, p2, (float)normalizedEdgeDistance),
+        return Vector2.Lerp
+        (
+            Vector2.Lerp(_start, _p1, (float)normalizedEdgeDistance),
+            Vector2.Lerp(_p1, _end, (float)normalizedEdgeDistance),
             (float)normalizedEdgeDistance
         );
     }
 
+    /// <inheritdoc />
     public override Vector2 GetDirection(double normalizedEdgeDistance)
     {
-        return Vector2.Lerp(
-            p1 - p0,
-            p2 - p1,
+        return Vector2.Lerp
+        (
+            _p1 - _start,
+            _end - _p1,
             (float)normalizedEdgeDistance
         );
     }
 
+    /// <inheritdoc />
     public override SignedDistance GetSignedDistance(Vector2 origin, out double normalizedEdgeDistance)
     {
-        var qa = p0 - origin;
-        var ab = p1 - p0;
-        var br = p0 + p2 - p1 - p1;
+        var qa = _start - origin;
+        var ab = _p1 - _start;
+        var br = _start + _end - _p1 - _p1;
         double a = Vector2.Dot(br, br);
         double b = 3 * Vector2.Dot(ab, br);
         double c = (2 * Vector2.Dot(ab, ab)) + Vector2.Dot(qa, br);
         double d = Vector2.Dot(qa, ab);
 
-        var roots = new Roots();
+        var roots = default(Roots);
         var solutions = SolveCubic(ref roots, a, b, c, d);
 
         double minDistance = NonZeroSign(ab.Cross(qa)) * qa.Length();
         normalizedEdgeDistance = -Vector2.Dot(qa, ab) / Vector2.Dot(ab, ab);
 
-        double distance = NonZeroSign((p2 - p1).Cross(p2 - origin)) * (p2 - origin).Length();
+        double distance = NonZeroSign((_end - _p1).Cross(_end - origin)) * (_end - origin).Length();
         if (Math.Abs(distance) < Math.Abs(minDistance))
         {
             minDistance = distance;
-            normalizedEdgeDistance = Vector2.Dot(origin - p1, p2 - p1) / Vector2.Dot(p2 - p1, p2 - p1);
+            normalizedEdgeDistance = Vector2.Dot(origin - _p1, _end - _p1) / Vector2.Dot(_end - _p1, _end - _p1);
         }
 
         for (var i = 0; i < solutions; i++)
@@ -77,8 +93,9 @@ public class QuadraticSegment : SplineSegment
                 continue;
             }
 
-            var endPoint = p0 + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
-            double solutionDistance = NonZeroSign((p2 - p0).Cross(endPoint - origin)) * (endPoint - origin).Length();
+            var endPoint = _start + ((float)(2 * roots[i]) * ab) + ((float)(roots[i] * roots[i]) * br);
+            double solutionDistance = NonZeroSign((_end - _start).Cross(endPoint - origin)) *
+                                      (endPoint - origin).Length();
 
             if (!(Math.Abs(solutionDistance) <= Math.Abs(minDistance)))
             {
@@ -100,20 +117,21 @@ public class QuadraticSegment : SplineSegment
             _ => new SignedDistance
             (
                 minDistance,
-                Math.Abs(Vector2.Dot(Vector2.Normalize(p2 - p1), Vector2.Normalize(p2 - origin)))
+                Math.Abs(Vector2.Dot(Vector2.Normalize(_end - _p1), Vector2.Normalize(_end - origin)))
             )
         };
     }
 
+    /// <inheritdoc />
     public override void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        PointBounds(p0, ref left, ref bottom, ref right, ref top);
-        PointBounds(p2, ref left, ref bottom, ref right, ref top);
-        var bot = p1 - p0 - (p2 - p1);
+        PointBounds(_start, ref left, ref bottom, ref right, ref top);
+        PointBounds(_end, ref left, ref bottom, ref right, ref top);
+        var bot = _p1 - _start - (_end - _p1);
 
         if (bot.X != 0)
         {
-            double param = (p1.X - p0.X) / bot.X;
+            double param = (_p1.X - _start.X) / bot.X;
             if (param is > 0 and < 1)
             {
                 PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
@@ -122,7 +140,7 @@ public class QuadraticSegment : SplineSegment
 
         if (bot.Y != 0)
         {
-            double param = (p1.Y - p0.Y) / bot.Y;
+            double param = (_p1.Y - _start.Y) / bot.Y;
             if (param is > 0 and < 1)
             {
                 PointBounds(GetPoint(param), ref left, ref bottom, ref right, ref top);
@@ -130,38 +148,41 @@ public class QuadraticSegment : SplineSegment
         }
     }
 
+    /// <inheritdoc />
     public override void MoveStartPoint(Vector2 newStart)
     {
-        var originalStartDirection = p0 - p1;
-        var origP1 = p1;
+        var originalStartDirection = _start - _p1;
+        var origP1 = _p1;
 
-        p1 += (float)(originalStartDirection.Cross(newStart - p0) / originalStartDirection.Cross(p2 - p1)) * (p2 - p1);
-        p0 = newStart;
-        if (Vector2.Dot(originalStartDirection, p0 - p1) < 0)
+        _p1 += (float)(originalStartDirection.Cross(newStart - _start) / originalStartDirection.Cross(_end - _p1)) * (_end - _p1);
+        _start = newStart;
+        if (Vector2.Dot(originalStartDirection, _start - _p1) < 0)
         {
-            p1 = origP1;
+            _p1 = origP1;
         }
     }
 
+    /// <inheritdoc />
     public override void MoveEndPoint(Vector2 newEnd)
     {
-        var originalEndDirection = p2 - p1;
-        var origP1 = p1;
+        var originalEndDirection = _end - _p1;
+        var origP1 = _p1;
 
-        p1 += (float)(originalEndDirection.Cross(newEnd - p2) / originalEndDirection.Cross(p0 - p1)) * (p0 - p1);
-        p2 = newEnd;
-        if (Vector2.Dot(originalEndDirection, p2 - p1) < 0)
+        _p1 += (float)(originalEndDirection.Cross(newEnd - _end) / originalEndDirection.Cross(_start - _p1)) * (_start - _p1);
+        _end = newEnd;
+        if (Vector2.Dot(originalEndDirection, _end - _p1) < 0)
         {
-            p1 = origP1;
+            _p1 = origP1;
         }
     }
 
+    /// <inheritdoc />
     public override void SplitInThirds(out EdgeSegment first, out EdgeSegment second, out EdgeSegment third)
     {
         first = new QuadraticSegment
         (
-            p0,
-            Vector2.Lerp(p0, p1, 1 / 3f),
+            _start,
+            Vector2.Lerp(_start, _p1, 1 / 3f),
             GetPoint(1 / 3d),
             this.Color
         );
@@ -169,9 +190,10 @@ public class QuadraticSegment : SplineSegment
         second = new QuadraticSegment
         (
             GetPoint(1 / 3d),
-            Vector2.Lerp(
-                Vector2.Lerp(p0, p1, 5 / 9f),
-                Vector2.Lerp(p1, p2, 4 / 9f),
+            Vector2.Lerp
+            (
+                Vector2.Lerp(_start, _p1, 5 / 9f),
+                Vector2.Lerp(_p1, _end, 4 / 9f),
                 0.5f
             ),
             GetPoint(2 / 3d),
@@ -181,8 +203,8 @@ public class QuadraticSegment : SplineSegment
         third = new QuadraticSegment
         (
             GetPoint(2 / 3d),
-            Vector2.Lerp(p1, p2, 2 / 3f),
-            p2,
+            Vector2.Lerp(_p1, _end, 2 / 3f),
+            _end,
             this.Color
         );
     }

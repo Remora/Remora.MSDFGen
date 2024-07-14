@@ -5,27 +5,69 @@
 //
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Remora.MSDFGen;
 
+/// <summary>
+/// Represents a contour segment based on a spline calculation.
+/// </summary>
 public abstract class SplineSegment : EdgeSegment
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SplineSegment"/> class.
+    /// </summary>
+    /// <param name="color">The color of the segment.</param>
+    protected SplineSegment(EdgeColor color)
+        : base(color)
+    {
+    }
+
+    /// <summary>
+    /// Represents up to three solutions for a polynomial equation.
+    /// </summary>
     protected struct Roots
     {
-        public double x0;
-        public double x1;
-        public double x2;
+        /// <summary>
+        /// Gets or sets the first root of the function.
+        /// </summary>
+        public double FirstRoot { get; set; }
 
+        /// <summary>
+        /// Gets or sets the second root of the function.
+        /// </summary>
+        public double SecondRoot { get; set; }
+
+        /// <summary>
+        /// Gets or sets the third root of the function.
+        /// </summary>
+        public double ThirdRoot { get; set; }
+
+        /// <summary>
+        /// Gets the root at the given index.
+        /// </summary>
+        /// <param name="i">The index of the root.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if a value below zero or larger than 2 is indexed.
+        /// </exception>
         public double this[int i] => i switch
         {
-            0 => x0,
-            1 => x1,
-            2 => x2,
+            0 => this.FirstRoot,
+            1 => this.SecondRoot,
+            2 => this.ThirdRoot,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
-    protected int SolveQuadratic(ref Roots roots, double a, double b, double c)
+    /// <summary>
+    /// Solves a quadratic polynomial, returning up to two roots for the function.
+    /// </summary>
+    /// <param name="roots">The value to calculate the roots in.</param>
+    /// <param name="a">The first coefficient of the function.</param>
+    /// <param name="b">The second coefficient of the function.</param>
+    /// <param name="c">The third coefficient of the function.</param>
+    /// <returns>The number of solutions for the function.</returns>
+    protected static int SolveQuadratic(ref Roots roots, double a, double b, double c)
     {
         if (Math.Abs(a) < 1e-14)
         {
@@ -39,7 +81,7 @@ public abstract class SplineSegment : EdgeSegment
                 return 0;
             }
 
-            roots.x0 = -c / b;
+            roots.FirstRoot = -c / b;
             return 1;
         }
 
@@ -50,13 +92,13 @@ public abstract class SplineSegment : EdgeSegment
             case > 0:
             {
                 discriminant = Math.Sqrt(discriminant);
-                roots.x0 = (-b + discriminant) / (2 * a);
-                roots.x1 = (-b - discriminant) / (2 * a);
+                roots.FirstRoot = (-b + discriminant) / (2 * a);
+                roots.SecondRoot = (-b - discriminant) / (2 * a);
                 return 2;
             }
             case 0:
             {
-                roots.x0 = -b / (2 * a);
+                roots.FirstRoot = -b / (2 * a);
                 return 1;
             }
             default:
@@ -66,7 +108,16 @@ public abstract class SplineSegment : EdgeSegment
         }
     }
 
-    protected int SolveCubicNormed(ref Roots roots, double a, double b, double c)
+    /// <summary>
+    /// Solves a normalized cubic polynomial, returning up to three roots of the function.
+    /// </summary>
+    /// <param name="roots">The value to calculate the roots in.</param>
+    /// <param name="a">The first coefficient of the function.</param>
+    /// <param name="b">The second coefficient of the function.</param>
+    /// <param name="c">The third coefficient of the function.</param>
+    /// <returns>The number of solutions for the function.</returns>
+    [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:Field names should not use Hungarian notation", Justification = "Not hungarian notation")]
+    protected static int SolveCubicNormed(ref Roots roots, double a, double b, double c)
     {
         var aSquared = a * a;
         var q = (aSquared - (3 * b)) / 9;
@@ -91,14 +142,14 @@ public abstract class SplineSegment : EdgeSegment
             a /= 3;
             q = -2 * Math.Sqrt(q);
 
-            roots.x0 = (q * Math.Cos(t / 3)) - a;
-            roots.x1 = (q * Math.Cos((t + (2 * Math.PI)) / 3)) - a;
-            roots.x2 = (q * Math.Cos((t - (2 * Math.PI)) / 3)) - a;
+            roots.FirstRoot = (q * Math.Cos(t / 3)) - a;
+            roots.SecondRoot = (q * Math.Cos((t + (2 * Math.PI)) / 3)) - a;
+            roots.ThirdRoot = (q * Math.Cos((t - (2 * Math.PI)) / 3)) - a;
 
             return 3;
         }
 
-        var A = -Math.Pow
+        var aMajor = -Math.Pow
         (
             Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
             1 / 3d
@@ -106,21 +157,32 @@ public abstract class SplineSegment : EdgeSegment
 
         if (r < 0)
         {
-            A = -A;
+            aMajor = -aMajor;
         }
 
-        var B = A == 0 ? 0 : q / A;
+        var bMajor = aMajor == 0 ? 0 : q / aMajor;
         a /= 3;
 
-        roots.x0 = A + B - a;
-        roots.x1 = (-0.5 * (A + B)) - a;
-        roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
+        roots.FirstRoot = aMajor + bMajor - a;
+        roots.SecondRoot = (-0.5 * (aMajor + bMajor)) - a;
+        roots.ThirdRoot = 0.5 * Math.Sqrt(3) * (aMajor - bMajor);
 
-        return Math.Abs(roots.x2) < 1e-14 ? 2 : 1;
+        return Math.Abs(roots.ThirdRoot) < 1e-14 ? 2 : 1;
     }
 
-    protected int SolveCubic(ref Roots roots, double a, double b, double c, double d)
+    /// <summary>
+    /// Solves a cubic polynomial, returning up to three roots of the function.
+    /// </summary>
+    /// <param name="roots">The value to calculate the roots in.</param>
+    /// <param name="a">The first coefficient of the function.</param>
+    /// <param name="b">The second coefficient of the function.</param>
+    /// <param name="c">The third coefficient of the function.</param>
+    /// <param name="d">The fourth coefficient of the function.</param>
+    /// <returns>The number of solutions for the function.</returns>
+    protected static int SolveCubic(ref Roots roots, double a, double b, double c, double d)
     {
-        return Math.Abs(a) < 1e-14 ? SolveQuadratic(ref roots, b, c, d) : SolveCubicNormed(ref roots, b / a, c / a, d / a);
+        return Math.Abs(a) < 1e-14
+            ? SolveQuadratic(ref roots, b, c, d)
+            : SolveCubicNormed(ref roots, b / a, c / a, d / a);
     }
 }

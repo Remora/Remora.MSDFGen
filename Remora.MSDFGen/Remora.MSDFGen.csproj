@@ -21,5 +21,8 @@
       <Compile Update="QuadraticSegment.cs">
         <DependentUpon>EdgeSegment.cs</DependentUpon>
       </Compile>
+      <Compile Update="SplineSegment.cs">
+        <DependentUpon>EdgeSegment.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

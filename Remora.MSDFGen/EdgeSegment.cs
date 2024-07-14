@@ -89,10 +89,19 @@ public abstract class EdgeSegment
     /// <param name="third">The third part.</param>
     public abstract void SplitInThirds(out EdgeSegment first, out EdgeSegment second, out EdgeSegment third);
 
-    public void DistanceToPseudoDistance(ref SignedDistance distance, Vector2 origin, double t)
+    /// <summary>
+    /// Converts the given signed distance to a pseudo-distance from the origin to a point along the path the segment
+    /// would have traced, had it continued outside its bounds. This function only modifies the distance for values
+    /// of <paramref name="normalizedEdgeDistance"/> below zero or above 1.
+    /// </summary>
+    /// <param name="distance">The distance to convert.</param>
+    /// <param name="origin">The origin point to measure from.</param>
+    /// <param name="normalizedEdgeDistance">The normalized edge distance.</param>
+    public void DistanceToPseudoDistance(ref SignedDistance distance, Vector2 origin, double normalizedEdgeDistance)
     {
-        switch (t)
+        switch (normalizedEdgeDistance)
         {
+            // before the start point
             case < 0:
             {
                 var startDirection = Vector2.Normalize(GetDirection(0));
@@ -111,6 +120,8 @@ public abstract class EdgeSegment
 
                 break;
             }
+
+            // after the end point
             case > 1:
             {
                 var endDirection = Vector2.Normalize(GetDirection(1));
@@ -132,7 +143,15 @@ public abstract class EdgeSegment
         }
     }
 
-    protected void PointBounds(Vector2 p, ref double left, ref double bottom, ref double right, ref double top)
+    /// <summary>
+    /// Shifts the given bounding coordinates to include the given point.
+    /// </summary>
+    /// <param name="p">The point.</param>
+    /// <param name="left">The left limit of the bounding box.</param>
+    /// <param name="bottom">The bottom limit of the bounding box.</param>
+    /// <param name="right">The right limit of the bounding box.</param>
+    /// <param name="top">The top limit of the bounding box.</param>
+    protected static void PointBounds(Vector2 p, ref double left, ref double bottom, ref double right, ref double top)
     {
         if (p.X < left)
         {
@@ -155,9 +174,15 @@ public abstract class EdgeSegment
         }
     }
 
-    protected int NonZeroSign(double d)
+    /// <summary>
+    /// Determines the nonzero sign of the given value, producing a value of 1 for zero and the original value for all
+    /// others.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <returns>The non-zero sign of the given value.</returns>
+    protected static int NonZeroSign(double value)
     {
-        var result = Math.Sign(d);
+        var result = Math.Sign(value);
         return result == 0 ? 1 : result;
     }
 }
