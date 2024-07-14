@@ -8,17 +8,25 @@ using System.Collections.Generic;
 
 namespace Remora.MSDFGen;
 
+/// <summary>
+/// Represents a shape made up of multiple contours. Multiple contours combine to form a single glyph.
+/// </summary>
 public class Shape
 {
-    public List<Contour> Contours { get; private set; }
+    /// <summary>
+    /// Gets the contours in the shape.
+    /// </summary>
+    public List<Contour> Contours { get; } = new();
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the Y-axis of the shape is inverted.
+    /// </summary>
     public bool InverseYAxis { get; set; }
 
-    public Shape()
-    {
-        Contours = new List<Contour>();
-    }
-
+    /// <summary>
+    /// Validates the shape, ensuring it is... something.
+    /// </summary>
+    /// <returns>true if the shape is valid; otherwise, false.</returns>
     public bool Validate()
     {
         foreach (var contour in Contours)
@@ -48,6 +56,9 @@ public class Shape
         return true;
     }
 
+    /// <summary>
+    /// Normalizes the shape, doing... something.
+    /// </summary>
     public void Normalize()
     {
         foreach (var contour in Contours)
@@ -65,6 +76,13 @@ public class Shape
         }
     }
 
+    /// <summary>
+    /// Calculates the bounding box of the shape.
+    /// </summary>
+    /// <param name="left">The left limit of the shape.</param>
+    /// <param name="bottom">The bottom limit of the shape.</param>
+    /// <param name="right">The right limit of the shape.</param>
+    /// <param name="top">The top limit of the shape.</param>
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
         foreach (var contour in Contours)
