@@ -27,20 +27,20 @@ public class Contour
     {
         get
         {
-            if (Edges.Count == 0)
+            if (this.Edges.Count == 0)
             {
                 return 0;
             }
 
             double total = 0;
 
-            switch (Edges.Count)
+            switch (this.Edges.Count)
             {
                 case 1:
                 {
-                    var a = Edges[0].GetPoint(0);
-                    var b = Edges[0].GetPoint(1 / 3f);
-                    var c = Edges[0].GetPoint(2 / 3f);
+                    var a = this.Edges[0].GetPoint(0);
+                    var b = this.Edges[0].GetPoint(1 / 3f);
+                    var c = this.Edges[0].GetPoint(2 / 3f);
 
                     total += Shoelace(a, b);
                     total += Shoelace(b, c);
@@ -49,10 +49,10 @@ public class Contour
                 }
                 case 2:
                 {
-                    var a = Edges[0].GetPoint(0);
-                    var b = Edges[0].GetPoint(0.5f);
-                    var c = Edges[1].GetPoint(0);
-                    var d = Edges[1].GetPoint(0.5f);
+                    var a = this.Edges[0].GetPoint(0);
+                    var b = this.Edges[0].GetPoint(0.5f);
+                    var c = this.Edges[1].GetPoint(0);
+                    var d = this.Edges[1].GetPoint(0.5f);
 
                     total += Shoelace(a, b);
                     total += Shoelace(b, c);
@@ -62,8 +62,8 @@ public class Contour
                 }
                 default:
                 {
-                    var prev = Edges[^1].GetPoint(0);
-                    foreach (var edge in Edges)
+                    var prev = this.Edges[^1].GetPoint(0);
+                    foreach (var edge in this.Edges)
                     {
                         var cur = edge.GetPoint(0);
                         total += Shoelace(prev, cur);
@@ -87,7 +87,7 @@ public class Contour
     /// <param name="top">The top limit of the contour.</param>
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        foreach (var edge in Edges)
+        foreach (var edge in this.Edges)
         {
             edge.GetBounds(ref left, ref bottom, ref right, ref top);
         }

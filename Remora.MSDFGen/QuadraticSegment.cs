@@ -161,7 +161,7 @@ public class QuadraticSegment : EdgeSegment
             p0,
             Vector2.Lerp(p0, p1, 1 / 3f),
             GetPoint(1 / 3d),
-            Color
+            this.Color
         );
         part2 = new QuadraticSegment(
             GetPoint(1 / 3d),
@@ -171,13 +171,13 @@ public class QuadraticSegment : EdgeSegment
                 0.5f
             ),
             GetPoint(2 / 3d),
-            Color
+            this.Color
         );
         part3 = new QuadraticSegment(
             GetPoint(2 / 3d),
             Vector2.Lerp(p1, p2, 2 / 3f),
             p2,
-            Color
+            this.Color
         );
     }
 }

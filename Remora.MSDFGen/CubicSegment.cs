@@ -189,7 +189,7 @@ public class CubicSegment : EdgeSegment
                 1 / 3f
             ),
             GetPoint(1 / 3d),
-            Color
+            this.Color
         );
         part2 = new CubicSegment(
             GetPoint(1 / 3d),
@@ -220,7 +220,7 @@ public class CubicSegment : EdgeSegment
                 1 / 3f
             ),
             GetPoint(2 / 3d),
-            Color
+            this.Color
         );
         part3 = new CubicSegment(
             GetPoint(2 / 3d),
@@ -231,7 +231,7 @@ public class CubicSegment : EdgeSegment
             ),
             p2 == p3 ? p3 : Vector2.Lerp(p2, p3, 2 / 3f),
             p3,
-            Color
+            this.Color
         );
     }
 }

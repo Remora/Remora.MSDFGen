@@ -29,7 +29,7 @@ public class Shape
     /// <returns>true if the shape is valid; otherwise, false.</returns>
     public bool Validate()
     {
-        foreach (var contour in Contours)
+        foreach (var contour in this.Contours)
         {
             if (contour.Edges.Count <= 0)
             {
@@ -61,7 +61,7 @@ public class Shape
     /// </summary>
     public void Normalize()
     {
-        foreach (var contour in Contours)
+        foreach (var contour in this.Contours)
         {
             if (contour.Edges.Count != 1)
             {
@@ -85,7 +85,7 @@ public class Shape
     /// <param name="top">The top limit of the shape.</param>
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        foreach (var contour in Contours)
+        foreach (var contour in this.Contours)
         {
             contour.GetBounds(ref left, ref bottom, ref right, ref top);
         }
