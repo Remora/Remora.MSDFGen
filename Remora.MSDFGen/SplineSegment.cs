@@ -1,0 +1,126 @@
+//
+//  SPDX-FileName: SplineSegment.cs
+//  SPDX-FileCopyrightText: Copyright (c) Jarl Gullberg
+//  SPDX-License-Identifier: MIT
+//
+
+using System;
+
+namespace Remora.MSDFGen;
+
+public abstract class SplineSegment : EdgeSegment
+{
+    protected struct Roots
+    {
+        public double x0;
+        public double x1;
+        public double x2;
+
+        public double this[int i] => i switch
+        {
+            0 => x0,
+            1 => x1,
+            2 => x2,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    protected int SolveQuadratic(ref Roots roots, double a, double b, double c)
+    {
+        if (Math.Abs(a) < 1e-14)
+        {
+            if (Math.Abs(b) < 1e-14)
+            {
+                if (c == 0)
+                {
+                    return -1;
+                }
+
+                return 0;
+            }
+
+            roots.x0 = -c / b;
+            return 1;
+        }
+
+        var discriminant = (b * b) - (4 * a * c);
+
+        switch (discriminant)
+        {
+            case > 0:
+            {
+                discriminant = Math.Sqrt(discriminant);
+                roots.x0 = (-b + discriminant) / (2 * a);
+                roots.x1 = (-b - discriminant) / (2 * a);
+                return 2;
+            }
+            case 0:
+            {
+                roots.x0 = -b / (2 * a);
+                return 1;
+            }
+            default:
+            {
+                return 0;
+            }
+        }
+    }
+
+    protected int SolveCubicNormed(ref Roots roots, double a, double b, double c)
+    {
+        var aSquared = a * a;
+        var q = (aSquared - (3 * b)) / 9;
+        var r = ((a * ((2 * aSquared) - (9 * b))) + (27 * c)) / 54;
+        var rSquared = r * r;
+        var qCubed = q * q * q;
+
+        if (rSquared < qCubed)
+        {
+            var t = r / Math.Sqrt(qCubed);
+            if (t < -1)
+            {
+                t = -1;
+            }
+
+            if (t > 1)
+            {
+                t = 1;
+            }
+
+            t = Math.Acos(t);
+            a /= 3;
+            q = -2 * Math.Sqrt(q);
+
+            roots.x0 = (q * Math.Cos(t / 3)) - a;
+            roots.x1 = (q * Math.Cos((t + (2 * Math.PI)) / 3)) - a;
+            roots.x2 = (q * Math.Cos((t - (2 * Math.PI)) / 3)) - a;
+
+            return 3;
+        }
+
+        var A = -Math.Pow
+        (
+            Math.Abs(r) + Math.Sqrt(rSquared - qCubed),
+            1 / 3d
+        );
+
+        if (r < 0)
+        {
+            A = -A;
+        }
+
+        var B = A == 0 ? 0 : q / A;
+        a /= 3;
+
+        roots.x0 = A + B - a;
+        roots.x1 = (-0.5 * (A + B)) - a;
+        roots.x2 = 0.5 * Math.Sqrt(3) * (A - B);
+
+        return Math.Abs(roots.x2) < 1e-14 ? 2 : 1;
+    }
+
+    protected int SolveCubic(ref Roots roots, double a, double b, double c, double d)
+    {
+        return Math.Abs(a) < 1e-14 ? SolveQuadratic(ref roots, b, c, d) : SolveCubicNormed(ref roots, b / a, c / a, d / a);
+    }
+}

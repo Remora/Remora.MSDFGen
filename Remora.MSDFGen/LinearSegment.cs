@@ -6,85 +6,116 @@
 
 using System;
 using System.Numerics;
+using Remora.MSDFGen.Extensions;
 
 namespace Remora.MSDFGen;
 
+/// <summary>
+/// Represents a straight line between two points.
+/// </summary>
 public class LinearSegment : EdgeSegment
 {
-    private Vector2 p0;
-    private Vector2 p1;
+    private Vector2 _start;
+    private Vector2 _end;
 
-    public LinearSegment(Vector2 p0, Vector2 p1, EdgeColor color)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LinearSegment"/> class.
+    /// </summary>
+    /// <param name="start">The start point of the line.</param>
+    /// <param name="end">The end point of the line.</param>
+    /// <param name="color">The color of the segment.</param>
+    public LinearSegment(Vector2 start, Vector2 end, EdgeColor color)
         : base(color)
     {
-        this.p0 = p0;
-        this.p1 = p1;
+        _start = start;
+        _end = end;
     }
 
+    /// <inheritdoc />
     public override EdgeSegment Clone()
     {
-        return new LinearSegment(p0, p1, Color);
+        return new LinearSegment(_start, _end, this.Color);
     }
 
-    public override Vector2 GetPoint(double t)
+    /// <inheritdoc />
+    public override Vector2 GetPoint(double normalizedEdgeDistance)
     {
-        return Vector2.Lerp(p0, p1, (float)t);
+        return Vector2.Lerp(_start, _end, (float)normalizedEdgeDistance);
     }
 
-    public override Vector2 GetDirection(double t)
+    /// <inheritdoc />
+    public override Vector2 GetDirection(double normalizedEdgeDistance)
     {
-        return p1 - p0;
+        return _end - _start;
     }
 
-    public override SignedDistance GetSignedDistance(Vector2 origin, out double t)
+    /// <inheritdoc />
+    public override SignedDistance GetSignedDistance(Vector2 origin, out double normalizedEdgeDistance)
     {
-        var aq = origin - p0;
-        var ab = p1 - p0;
-        t = Vector2.Dot(aq, ab) / Vector2.Dot(ab, ab);
-        var eq = (t > 0.5d ? p1 : p0) - origin;
+        var toStart = origin - _start;
+        var segmentDirection = _end - _start;
+
+        normalizedEdgeDistance = Vector2.Dot(toStart, segmentDirection) / Vector2.Dot(segmentDirection, segmentDirection);
+        var eq = (normalizedEdgeDistance > 0.5d ? _end : _start) - origin;
         double endPointDistance = eq.Length();
 
-        if (t is <= 0 or >= 1)
+        if (normalizedEdgeDistance is <= 0 or >= 1)
         {
             return new SignedDistance
             (
-                NonZeroSign(Cross(aq, ab)) * endPointDistance,
-                Math.Abs(Vector2.Dot(Vector2.Normalize(ab), Vector2.Normalize(eq)))
+                NonZeroSign(toStart.Cross(segmentDirection)) * endPointDistance,
+                Math.Abs(Vector2.Dot(Vector2.Normalize(segmentDirection), Vector2.Normalize(eq)))
             );
         }
 
-        double orthoDistance = Vector2.Dot(GetOrthonormal(ab, false, false), aq);
+        double orthoDistance = Vector2.Dot(GetOrthonormal(segmentDirection, false, false), toStart);
         if (Math.Abs(orthoDistance) < endPointDistance)
         {
             return new SignedDistance(orthoDistance, 0);
         }
 
         return new SignedDistance(
-            NonZeroSign(Cross(aq, ab)) * endPointDistance,
-            Math.Abs(Vector2.Dot(Vector2.Normalize(ab), Vector2.Normalize(eq)))
+            NonZeroSign(toStart.Cross(segmentDirection)) * endPointDistance,
+            Math.Abs(Vector2.Dot(Vector2.Normalize(segmentDirection), Vector2.Normalize(eq)))
         );
     }
 
+    /// <inheritdoc />
     public override void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
-        PointBounds(p0, ref left, ref bottom, ref right, ref top);
-        PointBounds(p1, ref left, ref bottom, ref right, ref top);
+        PointBounds(_start, ref left, ref bottom, ref right, ref top);
+        PointBounds(_end, ref left, ref bottom, ref right, ref top);
     }
 
-    public override void MoveStartPoint(Vector2 to)
+    /// <inheritdoc />
+    public override void MoveStartPoint(Vector2 newStart)
     {
-        p0 = to;
+        _start = newStart;
     }
 
-    public override void MoveEndPoint(Vector2 to)
+    /// <inheritdoc />
+    public override void MoveEndPoint(Vector2 newEnd)
     {
-        p1 = to;
+        _end = newEnd;
     }
 
-    public override void SplitInThirds(out EdgeSegment part1, out EdgeSegment part2, out EdgeSegment part3)
+    /// <inheritdoc />
+    public override void SplitInThirds(out EdgeSegment first, out EdgeSegment second, out EdgeSegment third)
     {
-        part1 = new LinearSegment(p0, GetPoint(1 / 3d), Color);
-        part2 = new LinearSegment(GetPoint(1 / 3d), GetPoint(2 / 3d), Color);
-        part3 = new LinearSegment(GetPoint(2 / 3d), p1, Color);
+        first = new LinearSegment(_start, GetPoint(1 / 3d), this.Color);
+        second = new LinearSegment(GetPoint(1 / 3d), GetPoint(2 / 3d), this.Color);
+        third = new LinearSegment(GetPoint(2 / 3d), _end, this.Color);
+    }
+
+    private static Vector2 GetOrthonormal(Vector2 v, bool polarity, bool allowZero)
+    {
+        var len = v.Length();
+
+        if (len == 0)
+        {
+            return polarity ? new Vector2(0, !allowZero ? 1 : 0) : new Vector2(0, -(!allowZero ? 1 : 0));
+        }
+
+        return polarity ? new Vector2(-v.Y / len, v.X / len) : new Vector2(v.Y / len, -v.X / len);
     }
 }

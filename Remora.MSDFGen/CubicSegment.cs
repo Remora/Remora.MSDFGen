@@ -6,10 +6,11 @@
 
 using System;
 using System.Numerics;
+using Remora.MSDFGen.Extensions;
 
 namespace Remora.MSDFGen;
 
-public class CubicSegment : EdgeSegment
+public class CubicSegment : SplineSegment
 {
     private Vector2 p0;
     private Vector2 p1;
@@ -27,33 +28,33 @@ public class CubicSegment : EdgeSegment
 
     public override EdgeSegment Clone()
     {
-        return new CubicSegment(p0, p1, p2, p3, Color);
+        return new CubicSegment(p0, p1, p2, p3, this.Color);
     }
 
-    public override Vector2 GetPoint(double t)
+    public override Vector2 GetPoint(double normalizedEdgeDistance)
     {
-        var p12 = Vector2.Lerp(p1, p2, (float)t);
+        var p12 = Vector2.Lerp(p1, p2, (float)normalizedEdgeDistance);
         return Vector2.Lerp(
             Vector2.Lerp(
-                Vector2.Lerp(p0, p1, (float)t),
+                Vector2.Lerp(p0, p1, (float)normalizedEdgeDistance),
                 p1,
-                (float)t
+                (float)normalizedEdgeDistance
             ),
             Vector2.Lerp(
                 p12,
-                Vector2.Lerp(p2, p3, (float)t),
-                (float)t
+                Vector2.Lerp(p2, p3, (float)normalizedEdgeDistance),
+                (float)normalizedEdgeDistance
             ),
-            (float)t
+            (float)normalizedEdgeDistance
         );
     }
 
-    public override Vector2 GetDirection(double t)
+    public override Vector2 GetDirection(double normalizedEdgeDistance)
     {
         var tangent = Vector2.Lerp(
-            Vector2.Lerp(p1 - p0, p2 - p1, (float)t),
-            Vector2.Lerp(p2 - p1, p3 - p2, (float)t),
-            (float)t
+            Vector2.Lerp(p1 - p0, p2 - p1, (float)normalizedEdgeDistance),
+            Vector2.Lerp(p2 - p1, p3 - p2, (float)normalizedEdgeDistance),
+            (float)normalizedEdgeDistance
         );
 
         if (tangent != Vector2.Zero)
@@ -61,7 +62,7 @@ public class CubicSegment : EdgeSegment
             return tangent;
         }
 
-        return t switch
+        return normalizedEdgeDistance switch
         {
             0 => p2 - p0,
             1 => p3 - p1,
@@ -69,7 +70,7 @@ public class CubicSegment : EdgeSegment
         };
     }
 
-    public override SignedDistance GetSignedDistance(Vector2 origin, out double t)
+    public override SignedDistance GetSignedDistance(Vector2 origin, out double normalizedEdgeDistance)
     {
         var qa = p0 - origin;
         var ab = p1 - p0;
@@ -77,16 +78,16 @@ public class CubicSegment : EdgeSegment
         var _as = p3 - p2 - (p2 - p1) - br;
 
         var epDir = GetDirection(0);
-        double minDistance = NonZeroSign(Cross(epDir, qa)) * qa.Length();
-        t = -Vector2.Dot(qa, epDir) / Vector2.Dot(epDir, epDir);
+        double minDistance = NonZeroSign(epDir.Cross(qa)) * qa.Length();
+        normalizedEdgeDistance = -Vector2.Dot(qa, epDir) / Vector2.Dot(epDir, epDir);
 
         epDir = GetDirection(1);
-        double distance = NonZeroSign(Cross(epDir, p3 - origin)) * (p3 - origin).Length();
+        double distance = NonZeroSign(epDir.Cross(p3 - origin)) * (p3 - origin).Length();
 
         if (Math.Abs(distance) < Math.Abs(minDistance))
         {
             minDistance = distance;
-            t = Vector2.Dot(origin + epDir - p3, epDir) / Vector2.Dot(epDir, epDir);
+            normalizedEdgeDistance = Vector2.Dot(origin + epDir - p3, epDir) / Vector2.Dot(epDir, epDir);
         }
 
         for (var i = 0; i < 4; i++)
@@ -96,12 +97,12 @@ public class CubicSegment : EdgeSegment
             while (true)
             {
                 var qpt = GetPoint(_t) - origin;
-                double stepDistance = NonZeroSign(Cross(GetDirection(_t), qpt)) * qpt.Length();
+                double stepDistance = NonZeroSign(GetDirection(_t).Cross(qpt)) * qpt.Length();
 
                 if (Math.Abs(stepDistance) < Math.Abs(minDistance))
                 {
                     minDistance = stepDistance;
-                    t = _t;
+                    normalizedEdgeDistance = _t;
                 }
 
                 if (step == 4)
@@ -109,10 +110,10 @@ public class CubicSegment : EdgeSegment
                     break;
                 }
 
-                var d1 = (3 * _as * (float)(t * t)) + (6 * br * (float)t) + (3 * ab);
-                var d2 = (6 * _as * (float)t) + (6 * br);
+                var d1 = (3 * _as * (float)(normalizedEdgeDistance * normalizedEdgeDistance)) + (6 * br * (float)normalizedEdgeDistance) + (3 * ab);
+                var d2 = (6 * _as * (float)normalizedEdgeDistance) + (6 * br);
                 _t -= Vector2.Dot(qpt, d1) / (Vector2.Dot(d1, d1) + Vector2.Dot(qpt, d2));
-                if (t is < 0 or > 1)
+                if (normalizedEdgeDistance is < 0 or > 1)
                 {
                     break;
                 }
@@ -121,7 +122,7 @@ public class CubicSegment : EdgeSegment
             }
         }
 
-        return t switch
+        return normalizedEdgeDistance switch
         {
             >= 0 and <= 1 => new SignedDistance(minDistance, 0),
             < 0.5 => new SignedDistance
@@ -166,21 +167,21 @@ public class CubicSegment : EdgeSegment
         }
     }
 
-    public override void MoveStartPoint(Vector2 to)
+    public override void MoveStartPoint(Vector2 newStart)
     {
-        p1 += to - p0;
-        p0 = to;
+        p1 += newStart - p0;
+        p0 = newStart;
     }
 
-    public override void MoveEndPoint(Vector2 to)
+    public override void MoveEndPoint(Vector2 newEnd)
     {
-        p2 += to - p3;
-        p3 = to;
+        p2 += newEnd - p3;
+        p3 = newEnd;
     }
 
-    public override void SplitInThirds(out EdgeSegment part1, out EdgeSegment part2, out EdgeSegment part3)
+    public override void SplitInThirds(out EdgeSegment first, out EdgeSegment second, out EdgeSegment third)
     {
-        part1 = new CubicSegment(
+        first = new CubicSegment(
             p0,
             p0 == p1 ? p0 : Vector2.Lerp(p0, p1, 1 / 3f),
             Vector2.Lerp(
@@ -191,7 +192,7 @@ public class CubicSegment : EdgeSegment
             GetPoint(1 / 3d),
             this.Color
         );
-        part2 = new CubicSegment(
+        second = new CubicSegment(
             GetPoint(1 / 3d),
             Vector2.Lerp(
                 Vector2.Lerp(
@@ -222,7 +223,7 @@ public class CubicSegment : EdgeSegment
             GetPoint(2 / 3d),
             this.Color
         );
-        part3 = new CubicSegment(
+        third = new CubicSegment(
             GetPoint(2 / 3d),
             Vector2.Lerp(
                 Vector2.Lerp(p1, p2, 2 / 3f),
