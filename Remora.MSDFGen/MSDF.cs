@@ -9,75 +9,74 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using Remora.MSDFGen.Extensions;
+using Remora.MSDFGen.Graphics;
 
 namespace Remora.MSDFGen;
 
-internal struct MultiDistance
-{
-    public double r;
-    public double g;
-    public double b;
-    public double med;
-}
-
+/// <summary>
+/// Defines functions for calculated multi-channel signed distance fields.
+/// </summary>
 public static class MSDF
 {
     public static bool PixelClash(Color4 a, Color4 b, double threshold)
     {
-        var aIn = (a.r > .5f ? 1 : 0) + (a.g > .5f ? 1 : 0) + (a.b > .5f ? 1 : 0) >= 2;
-        var bIn = (b.r > .5f ? 1 : 0) + (b.g > .5f ? 1 : 0) + (b.b > .5f ? 1 : 0) >= 2;
+        var aIn = (a.R > .5f ? 1 : 0) + (a.G > .5f ? 1 : 0) + (a.B > .5f ? 1 : 0) >= 2;
+        var bIn = (b.R > .5f ? 1 : 0) + (b.G > .5f ? 1 : 0) + (b.B > .5f ? 1 : 0) >= 2;
         if (aIn != bIn)
         {
             return false;
         }
 
-        if ((a.r > .5f && a.g > .5f && a.b > .5f) ||
-            (a.r < .5f && a.g < .5f && a.b < .5f) ||
-            (b.r > .5f && b.g > .5f && b.b > .5f) ||
-            (b.r < .5f && b.g < .5f && b.b < .5f))
+        if
+        (
+            (a.R > .5f && a.G > .5f && a.B > .5f) ||
+            (a.R < .5f && a.G < .5f && a.B < .5f) ||
+            (b.R > .5f && b.G > .5f && b.B > .5f) ||
+            (b.R < .5f && b.G < .5f && b.B < .5f)
+        )
         {
             return false;
         }
 
         float aa, ab, ba, bb, ac, bc;
 
-        if (a.r > .5f != b.r > .5f &&
-            a.r < .5f != b.r < .5f)
+        if (a.R > .5f != b.R > .5f && a.R < .5f != b.R < .5f)
         {
-            aa = a.r;
-            ba = b.r;
-            if (a.g > .5f != b.g > .5f &&
-                a.g < .5f != b.g < .5f)
+            aa = a.R;
+            ba = b.R;
+            if (a.G > .5f != b.G > .5f &&
+                a.G < .5f != b.G < .5f)
             {
-                ab = a.g;
-                bb = b.g;
-                ac = a.b;
-                bc = b.b;
+                ab = a.G;
+                bb = b.G;
+                ac = a.B;
+                bc = b.B;
             }
-            else if (a.b > .5f != b.b > .5f &&
-                     a.b < .5f != b.b < .5f)
+            else if (a.B > .5f != b.B > .5f &&
+                     a.B < .5f != b.B < .5f)
             {
-                ab = a.b;
-                bb = b.b;
-                ac = a.g;
-                bc = b.g;
+                ab = a.B;
+                bb = b.B;
+                ac = a.G;
+                bc = b.G;
             }
             else
             {
                 return false;
             }
         }
-        else if (a.g > .5f != b.g > .5f &&
-                 a.g < .5f != b.g < .5f &&
-                 a.b > .5f != b.b > .5f &&
-                 a.b < .5f != b.b < .5f)
+        else if (a.G > .5f != b.G > .5f &&
+                 a.G < .5f != b.G < .5f &&
+                 a.B > .5f != b.B > .5f &&
+                 a.B < .5f != b.B < .5f)
         {
-            aa = a.g;
-            ba = b.g;
-            ab = a.b;
-            bb = b.b;
-            ac = a.r;
-            bc = b.r;
+            aa = a.G;
+            ba = b.G;
+            ab = a.B;
+            bb = b.B;
+            ac = a.R;
+            bc = b.R;
         }
         else
         {
@@ -89,10 +88,11 @@ public static class MSDF
                Math.Abs(ac - .5f) >= Math.Abs(bc - .5f);
     }
 
-    public static bool PixelClash(Color4b a, Color4b b, double threshold)
+    public static bool PixelClash(Color a, Color b, double threshold)
     {
-        Color4 af = new Color4(a);
-        Color4 bf = new Color4(b);
+        var af = new Color4(a);
+        var bf = new Color4(b);
+
         return PixelClash(af, bf, threshold);
     }
 
@@ -102,7 +102,7 @@ public static class MSDF
         public int y;
     }
 
-    public static void CorrectErrors(Bitmap<Color4> output, Rectanglei region, Vector2 threshold)
+    public static void CorrectErrors(Bitmap<Color4> output, Rectangle region, Vector2 threshold)
     {
         var clashes = new List<Clash>();
         int w = output.Width;
@@ -130,15 +130,15 @@ public static class MSDF
         for (var i = 0; i < clashes.Count; i++)
         {
             Color4 pixel = output[clashes[i].x, clashes[i].y];
-            float med = Median(pixel.r, pixel.g, pixel.b);
-            pixel.r = med;
-            pixel.g = med;
-            pixel.b = med;
+            float med = Median(pixel.R, pixel.G, pixel.B);
+            pixel.R = med;
+            pixel.G = med;
+            pixel.B = med;
             output[clashes[i].x, clashes[i].y] = pixel;
         }
     }
 
-    public static void CorrectErrors(Bitmap<Color4b> output, Rectanglei region, Vector2 threshold)
+    public static void CorrectErrors(Bitmap<Color> output, Rectangle region, Vector2 threshold)
     {
         var clashes = new List<Clash>();
         int w = output.Width;
@@ -165,11 +165,10 @@ public static class MSDF
 
         for (var i = 0; i < clashes.Count; i++)
         {
-            Color4b pixel = output[clashes[i].x, clashes[i].y];
-            int med = Median(pixel.r, pixel.g, pixel.b);
-            pixel.r = (byte)med;
-            pixel.g = (byte)med;
-            pixel.b = (byte)med;
+            Color pixel = output[clashes[i].x, clashes[i].y];
+            var median = Median(pixel.R, pixel.G, pixel.B);
+
+            pixel = Color.FromArgb(median, median, median, pixel.A);
             output[clashes[i].x, clashes[i].y] = pixel;
         }
     }
@@ -199,13 +198,15 @@ public static class MSDF
         GenerateSDF(output, shape, new Rectangle(0, 0, output.Width, output.Height), range, scale, translate);
     }
 
-    public static void GenerateSDF(
+    public static void GenerateSDF
+    (
         Bitmap<float> output,
         Shape shape,
         Rectangle region,
         double range,
         Vector2 scale,
-        Vector2 translate)
+        Vector2 translate
+    )
     {
         var contourCount = shape.Contours.Count;
         var windings = new int[contourCount];
@@ -227,7 +228,8 @@ public static class MSDF
             var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
             for (var x = xStart; x < xEnd; x++)
             {
-                output[x, row] = EvaluateSDF(
+                output[x, row] = EvaluateSDF
+                (
                     shape,
                     windings,
                     contourSD,
@@ -235,18 +237,21 @@ public static class MSDF
                     y,
                     range,
                     scale,
-                    region.Position + translate);
+                    region.Location.ToVector() + translate
+                );
             }
         }
     }
 
-    public static void GenerateSDF(
+    public static void GenerateSDF
+    (
         Bitmap<byte> output,
         Shape shape,
         Rectangle region,
         double range,
         Vector2 scale,
-        Vector2 translate)
+        Vector2 translate
+    )
     {
         var contourCount = shape.Contours.Count;
         var windings = new int[contourCount];
@@ -268,17 +273,21 @@ public static class MSDF
             var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
             for (var x = xStart; x < xEnd; x++)
             {
-                output[x, row] = (byte)Math.Min(
-                    Math.Min(
-                        (int)(EvaluateSDF(shape, windings, contourSD, x, y, range, scale, region.Position + translate) *
-                              255),
-                        0),
-                    255);
+                output[x, row] = (byte)Math.Min
+                (
+                    Math.Min
+                    (
+                        (int)(EvaluateSDF(shape, windings, contourSD, x, y, range, scale, region.Location.ToVector() + translate) * 255),
+                        0
+                    ),
+                    255
+                );
             }
         }
     }
 
-    private static float EvaluateSDF(
+    private static float EvaluateSDF
+    (
         Shape shape,
         int[] windings,
         double[] contourSD,
@@ -286,7 +295,8 @@ public static class MSDF
         int y,
         double range,
         Vector2 scale,
-        Vector2 translate)
+        Vector2 translate
+    )
     {
         var contourCount = contourSD.Length;
 
@@ -366,50 +376,60 @@ public static class MSDF
         public double nearParam;
     }
 
-    public static void GenerateMSDF(
+    public static void GenerateMSDF
+    (
         Bitmap<Color3> output,
         Shape shape,
         double range,
         Vector2 scale,
         Vector2 translate,
-        double edgeThreshold)
+        double edgeThreshold
+    )
     {
-        GenerateMSDF(
+        GenerateMSDF
+        (
             output,
             shape,
             new Rectangle(0, 0, output.Width, output.Height),
             range,
             scale,
             translate,
-            edgeThreshold);
+            edgeThreshold
+        );
     }
 
-    public static void GenerateMSDF(
+    public static void GenerateMSDF
+    (
         Bitmap<Color3b> output,
         Shape shape,
         double range,
         Vector2 scale,
         Vector2 translate,
-        double edgeThreshold)
+        double edgeThreshold
+    )
     {
-        GenerateMSDF(
+        GenerateMSDF
+        (
             output,
             shape,
             new Rectangle(0, 0, output.Width, output.Height),
             range,
             scale,
             translate,
-            edgeThreshold);
+            edgeThreshold
+        );
     }
 
-    public static void GenerateMSDF(
+    public static void GenerateMSDF
+    (
         Bitmap<Color3> output,
         Shape shape,
         Rectangle region,
         double range,
         Vector2 scale,
         Vector2 translate,
-        double edgeThreshold)
+        double edgeThreshold
+    )
     {
         var contourCount = shape.Contours.Count;
         var windings = new int[contourCount];
@@ -431,20 +451,22 @@ public static class MSDF
             var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
             for (var x = xStart; x < xEnd; x++)
             {
-                var p = (new Vector2(x, y) - region.Position - translate) / scale;
+                var p = (new Vector2(x, y) - region.Location.ToVector() - translate) / scale;
                 output[x, row] = EvaluateMSDF(shape, windings, contourSD, p, range);
             }
         }
     }
 
-    public static void GenerateMSDF(
+    public static void GenerateMSDF
+    (
         Bitmap<Color3b> output,
         Shape shape,
         Rectangle region,
         double range,
         Vector2 scale,
         Vector2 translate,
-        double edgeThreshold)
+        double edgeThreshold
+    )
     {
         var contourCount = shape.Contours.Count;
         var windings = new int[contourCount];
@@ -466,20 +488,22 @@ public static class MSDF
             var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
             for (var x = xStart; x < xEnd; x++)
             {
-                var p = (new Vector2(x, y) - region.Position - translate) / scale;
+                var p = (new Vector2(x, y) - region.Location.ToVector() - translate) / scale;
                 output[x, row] = new Color3b(EvaluateMSDF(shape, windings, contourSD, p, range));
             }
         }
     }
 
-    public static void GenerateMSDF(
-        Bitmap<Color4b> output,
+    public static void GenerateMSDF
+    (
+        Bitmap<Color> output,
         Shape shape,
         Rectangle region,
         double range,
         Vector2 scale,
         Vector2 translate,
-        double edgeThreshold)
+        double edgeThreshold
+    )
     {
         var contourCount = shape.Contours.Count;
         var windings = new int[contourCount];
@@ -501,8 +525,8 @@ public static class MSDF
             var row = shape.InverseYAxis ? yEnd - (y - yStart) - 1 : y;
             for (var x = xStart; x < xEnd; x++)
             {
-                var p = (new Vector2(x, y) - region.Position - translate) / scale;
-                output[x, row] = new Color4b(EvaluateMSDF(shape, windings, contourSD, p, range), 255);
+                var p = (new Vector2(x, y) - region.Location.ToVector() - translate) / scale;
+                output[x, row] = new Color(EvaluateMSDF(shape, windings, contourSD, p, range), 255);
             }
         }
     }
@@ -603,10 +627,10 @@ public static class MSDF
 
             medMinDistance = Median(r.minDistance.Distance, g.minDistance.Distance, b.minDistance.Distance);
 
-            contourSD[i].r = r.minDistance.Distance;
-            contourSD[i].g = g.minDistance.Distance;
-            contourSD[i].b = b.minDistance.Distance;
-            contourSD[i].med = medMinDistance;
+            contourSD[i].R = r.minDistance.Distance;
+            contourSD[i].G = g.minDistance.Distance;
+            contourSD[i].B = b.minDistance.Distance;
+            contourSD[i].Median = medMinDistance;
 
             if (windings[i] > 0 && medMinDistance >= 0 && Math.Abs(medMinDistance) < Math.Abs(posDist))
             {
@@ -625,19 +649,19 @@ public static class MSDF
 
         var msd = new MultiDistance
         {
-            r = SignedDistance.Infinite.Distance,
-            g = SignedDistance.Infinite.Distance,
-            b = SignedDistance.Infinite.Distance,
-            med = SignedDistance.Infinite.Distance
+            R = SignedDistance.Infinite.Distance,
+            G = SignedDistance.Infinite.Distance,
+            B = SignedDistance.Infinite.Distance,
+            Median = SignedDistance.Infinite.Distance
         };
 
         if (posDist >= 0 && Math.Abs(posDist) <= Math.Abs(negDist))
         {
-            msd.med = SignedDistance.Infinite.Distance;
+            msd.Median = SignedDistance.Infinite.Distance;
             winding = 1;
             for (var i = 0; i < contourCount; i++)
             {
-                if (windings[i] > 0 && contourSD[i].med > msd.med && Math.Abs(contourSD[i].med) < Math.Abs(negDist))
+                if (windings[i] > 0 && contourSD[i].Median > msd.Median && Math.Abs(contourSD[i].Median) < Math.Abs(negDist))
                 {
                     msd = contourSD[i];
                 }
@@ -645,11 +669,11 @@ public static class MSDF
         }
         else if (negDist <= 0 && Math.Abs(negDist) <= Math.Abs(posDist))
         {
-            msd.med = -SignedDistance.Infinite.Distance;
+            msd.Median = -SignedDistance.Infinite.Distance;
             winding = -1;
             for (var i = 0; i < contourCount; i++)
             {
-                if (windings[i] < 0 && contourSD[i].med < msd.med && Math.Abs(contourSD[i].med) < Math.Abs(posDist))
+                if (windings[i] < 0 && contourSD[i].Median < msd.Median && Math.Abs(contourSD[i].Median) < Math.Abs(posDist))
                 {
                     msd = contourSD[i];
                 }
@@ -658,25 +682,25 @@ public static class MSDF
 
         for (var i = 0; i < contourCount; i++)
         {
-            if (windings[i] != winding && Math.Abs(contourSD[i].med) < Math.Abs(msd.med))
+            if (windings[i] != winding && Math.Abs(contourSD[i].Median) < Math.Abs(msd.Median))
             {
                 msd = contourSD[i];
             }
         }
 
-        if (Median(sr.minDistance.Distance, sg.minDistance.Distance, sb.minDistance.Distance) != msd.med)
+        if (Median(sr.minDistance.Distance, sg.minDistance.Distance, sb.minDistance.Distance) != msd.Median)
         {
             return new Color3(
-                (float)(msd.r / range) + 0.5f,
-                (float)(msd.g / range) + 0.5f,
-                (float)(msd.b / range) + 0.5f);
+                (float)(msd.R / range) + 0.5f,
+                (float)(msd.G / range) + 0.5f,
+                (float)(msd.B / range) + 0.5f);
         }
 
-        msd.r = sr.minDistance.Distance;
-        msd.g = sg.minDistance.Distance;
-        msd.b = sb.minDistance.Distance;
+        msd.R = sr.minDistance.Distance;
+        msd.G = sg.minDistance.Distance;
+        msd.B = sb.minDistance.Distance;
 
-        return new Color3((float)(msd.r / range) + 0.5f, (float)(msd.g / range) + 0.5f, (float)(msd.b / range) + 0.5f);
+        return new Color3((float)(msd.R / range) + 0.5f, (float)(msd.G / range) + 0.5f, (float)(msd.B / range) + 0.5f);
     }
 
     private static EdgeColor[] switchColors = { EdgeColor.Cyan, EdgeColor.Magenta, EdgeColor.Yellow };
@@ -836,7 +860,7 @@ public static class MSDF
         return Vector2.Dot(aDir, bDir) <= 0 || Math.Abs(EdgeSegment.Cross(aDir, bDir)) > crossThreshold;
     }
 
-	private struct Context
+    private struct Context
     {
         public Vector2 position;
         public Shape shape;
