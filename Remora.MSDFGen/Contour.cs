@@ -10,15 +10,23 @@ using System.Numerics;
 
 namespace Remora.MSDFGen;
 
+/// <summary>
+/// Represents the countour of a single glyph.
+/// </summary>
 public class Contour
 {
-    public List<EdgeSegment> Edges { get; private set; }
+    /// <summary>
+    /// Gets the segments take makes up the contour.
+    /// </summary>
+    public List<EdgeSegment> Edges { get; } = new();
 
-    public Contour()
-    {
-        Edges = new List<EdgeSegment>();
-    }
-
+    /// <summary>
+    /// Calculates the bounding box of the contour.
+    /// </summary>
+    /// <param name="left">The left limit of the contour.</param>
+    /// <param name="bottom">The bottom limit of the contour.</param>
+    /// <param name="right">The right limit of the contour.</param>
+    /// <param name="top">The top limit of the contour.</param>
     public void GetBounds(ref double left, ref double bottom, ref double right, ref double top)
     {
         foreach (var edge in Edges)
@@ -27,6 +35,9 @@ public class Contour
         }
     }
 
+    /// <summary>
+    /// Gets the winding direction of the contour.
+    /// </summary>
     public int Winding
     {
         get
@@ -82,7 +93,7 @@ public class Contour
         }
     }
 
-    private double Shoelace(Vector2 a, Vector2 b)
+    private static double Shoelace(Vector2 a, Vector2 b)
     {
         return (b.X - a.X) * (a.Y + b.Y);
     }
