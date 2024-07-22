@@ -1,5 +1,5 @@
 //
-//  SPDX-FileName: Color4.cs
+//  SPDX-FileName: Color3.cs
 //  SPDX-FileCopyrightText: Copyright (c) Jarl Gullberg
 //  SPDX-License-Identifier: MIT
 //
@@ -10,11 +10,11 @@ using System.Numerics;
 namespace Remora.MSDFGen.Graphics;
 
 /// <summary>
-/// Represents a floating-point RGBA colour.
+/// Represents a floating-point RGB colour.
 /// </summary>
-public struct Color4
+public struct Color3
 {
-    private Vector4 _value;
+    private Vector3 _value;
 
     /// <summary>
     /// Gets or sets the red component of the colour.
@@ -44,32 +44,28 @@ public struct Color4
     }
 
     /// <summary>
-    /// Gets or sets the alpha component of the colour.
+    /// Initializes a new instance of the <see cref="Color3"/> struct.
     /// </summary>
-    public float A
+    /// <param name="color">The byte-packed colour.</param>
+    public Color3(Color color)
     {
-        get => _value.W;
-        set => _value.W = value;
+        _value = new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Color4"/> struct.
+    /// Initializes a new instance of the <see cref="Color3"/> struct.
     /// </summary>
-    /// <param name="color">The byte-packed colour.</param>
-    public Color4(Color color)
+    /// <param name="r">The red component of the colour.</param>
+    /// <param name="g">The green component of the colour.</param>
+    /// <param name="b">The blue component of the colour.</param>
+    public Color3(float r, float g, float b)
     {
-        _value = new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+        _value = new Vector3(r, g, b);
     }
 
     /// <summary>
     /// Converts the floating-point RGB colour to a packed 8-bit element colour.
     /// </summary>
     /// <returns>The packed colour.</returns>
-    public Color ToColor() => Color.FromArgb
-    (
-        (int)(_value.W * 255f),
-        (int)(_value.X * 255f),
-        (int)(_value.Y * 255f),
-        (int)(_value.Z * 255f)
-    );
+    public Color ToColor() => Color.FromArgb((int)(_value.X * 255f), (int)(_value.Y * 255f), (int)(_value.Z * 255f));
 }
